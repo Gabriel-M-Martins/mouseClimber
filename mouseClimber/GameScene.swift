@@ -37,7 +37,7 @@ class GameScene: SKScene {
         }
         
         if buildings.count < 3 {
-            if maxY <= view.frame.maxY + 150 {
+            if maxY <= view.frame.maxY + 140 {
                 let nextBuildingsYPosition = buildings.last!.position.y + buildings.last!.children[0].frame.maxY
                 buildings.append(createBuildingParent(view, starterPosition: CGPoint(x: 0, y: nextBuildingsYPosition)))
             }
