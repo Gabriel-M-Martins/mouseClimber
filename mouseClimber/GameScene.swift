@@ -23,6 +23,8 @@ class GameScene: SKScene {
         buildings.append(createBuildingParent(view, starterPosition: bufferPosition))
         
         print(view.frame.minY)
+        
+        setupTapGestureRecognizer()
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -37,7 +39,7 @@ class GameScene: SKScene {
         }
         
         if buildings.count < 3 {
-            if maxY <= view.frame.maxY + 140 {
+            if maxY <= view.frame.maxY + 150 {
                 let nextBuildingsYPosition = buildings.last!.position.y + buildings.last!.children[0].frame.maxY
                 buildings.append(createBuildingParent(view, starterPosition: CGPoint(x: 0, y: nextBuildingsYPosition)))
             }
@@ -48,6 +50,21 @@ class GameScene: SKScene {
          if foo <= view.frame.maxY + 100 {
          */
         
+    }
+    
+    private func setupTapGestureRecognizer() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        
+        tapGesture.numberOfTapsRequired = 1
+        tapGesture.numberOfTouchesRequired = 1
+        
+        self.view?.addGestureRecognizer(tapGesture)
+    }
+        
+    @objc func handleTap(_ sender: UITapGestureRecognizer) {
+        if sender.state == .recognized {
+            print("move sprite")
+        }
     }
     
     private func setupObstacle(_ view: SKView) {
