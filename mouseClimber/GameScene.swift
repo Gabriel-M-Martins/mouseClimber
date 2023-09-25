@@ -15,6 +15,10 @@ class GameScene: SKScene {
     
     private var obstacle: SKSpriteNode = SKSpriteNode()
     
+    private var square = SKSpriteNode()
+    
+    private var isAtRight = false
+    
     override func didMove(to view: SKView) {
 //        setupObstacle(view)
         buildings.append(createBuildingParent(view))
@@ -25,6 +29,13 @@ class GameScene: SKScene {
         print(view.frame.minY)
         
         setupTapGestureRecognizer()
+        
+        square = SKSpriteNode(color: .red, size: CGSize(width: 40, height: 40))
+        square.anchorPoint = CGPoint(x: 0, y: 0)
+        square.position = CGPoint(x: buildings[0].children[0].frame.width, y: view.frame.height / 3)
+        square.zPosition = 1
+        
+        addChild(square)
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -64,6 +75,16 @@ class GameScene: SKScene {
     @objc func handleTap(_ sender: UITapGestureRecognizer) {
         if sender.state == .recognized {
             print("move sprite")
+            
+            if isAtRight {
+                square.anchorPoint = CGPoint(x: 0, y: 0)
+                square.position = CGPoint(x: buildings[0].children[0].frame.width, y: square.position.y)
+            } else {
+                square.anchorPoint = CGPoint(x: 1, y: 0)
+                square.position = CGPoint(x: (view?.frame.width ?? 0) - buildings[0].children[1].frame.width, y: square.position.y)
+            }
+            
+            self.isAtRight.toggle()
         }
     }
     
@@ -91,16 +112,14 @@ class GameScene: SKScene {
         let buildingWidth = view.frame.width / 3
         let buildingHeight = view.frame.height * 2
         
-        let buildingXPosition = (view.frame.width / 2)
-        
         let building1 = SKSpriteNode(color: .blue, size: CGSize(width: buildingWidth, height: buildingHeight))
         let building2 = SKSpriteNode(color: .blue, size: CGSize(width: buildingWidth, height: buildingHeight))
         
         building1.anchorPoint = CGPoint(x: 0, y: 0)
         building2.anchorPoint = CGPoint(x: 1, y: 0)
         
-        building1.position = CGPoint(x: 0 - buildingXPosition, y: 0)
-        building2.position = CGPoint(x: buildingXPosition, y: 0)
+        building1.position = CGPoint(x: 0, y: 0)
+        building2.position = CGPoint(x: view.frame.maxX, y: 0)
         
         parent.addChild(building1)
         parent.addChild(building2)

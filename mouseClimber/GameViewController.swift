@@ -16,7 +16,7 @@ class GameViewController: UIViewController {
         
         if let view = self.view as! SKView? {
             let scene = GameScene(size: view.frame.size)
-            scene.anchorPoint = CGPoint(x: 0.5, y: 0)
+            scene.anchorPoint = CGPoint(x: 0, y: 0)
             scene.scaleMode = .aspectFill
             view.presentScene(scene)
             view.ignoresSiblingOrder = true
