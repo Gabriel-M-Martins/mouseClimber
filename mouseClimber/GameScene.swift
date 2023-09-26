@@ -12,11 +12,13 @@ class GameScene: SKScene {
     private var rollingSpeed: CGFloat = 5
     private var rollingDuration: Double = 0.01
     
+    private var isJumping = false
+    
     private var buildings: [SKNode] = []
     
     private var obstacle: SKSpriteNode = SKSpriteNode()
     
-    private var square = SKSpriteNode()
+    private var mouse = SKSpriteNode()
     
     private var isAtRight = false
     
@@ -27,15 +29,18 @@ class GameScene: SKScene {
         setupBuildings(view)
         setupTapGestureRecognizer()
         
-        square = SKSpriteNode(color: .red, size: CGSize(width: 40, height: 40))
-        square.anchorPoint = CGPoint(x: 0, y: 0)
-        square.position = CGPoint(x: buildings[0].children[0].frame.width, y: view.frame.height / 3)
-        square.zPosition = 1
+        mouse = SKSpriteNode(color: .red, size: CGSize(width: 40, height: 40))
+        mouse.anchorPoint = CGPoint(x: 0, y: 0)
+        mouse.position = CGPoint(x: buildings[0].children[0].frame.width, y: view.frame.height / 3)
+        mouse.zPosition = 1
         
-        addChild(square)
+        let minYConstraint = SKConstraint.positionY(SKRange(upperLimit: view.frame.height - 50))
+        mouse.constraints = [minYConstraint]
+        
+        addChild(mouse)
+        
+        mouse.run(.repeatForever(.move(by: CGVector(dx: 0, dy: -10), duration: 0.1)))
     }
-    
-    
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
@@ -61,9 +66,9 @@ class GameScene: SKScene {
             print("move sprite")
             
             if isAtRight {
-                square.run(.move(by: CGVector(dx: ((0 - (view?.frame.width ?? 0)) / 3) + square.frame.width, dy: 0), duration: 0.2))
+                mouse.run(.move(by: CGVector(dx: ((0 - (view?.frame.width ?? 0)) / 3) + mouse.frame.width, dy: 100), duration: 0.1))
             } else {
-                square.run(.move(by: CGVector(dx: ((view?.frame.width ?? 0) / 3) - square.frame.width, dy: 0), duration: 0.2))
+                mouse.run(.move(by: CGVector(dx: ((view?.frame.width ?? 0) / 3) - mouse.frame.width, dy: 100), duration: 0.1))
             }
             
             self.isAtRight.toggle()
@@ -134,6 +139,7 @@ class GameScene: SKScene {
         parent.addChild(building1)
         parent.addChild(building2)
     }
+
     
     // MARK: -
 }
