@@ -10,6 +10,7 @@ import GameplayKit
 
 class GameScene: SKScene {
     private var rollingSpeed: CGFloat = 5
+    private var rollingDuration: Double = 0.01
     
     private var buildings: [SKNode] = []
     
@@ -19,15 +20,11 @@ class GameScene: SKScene {
     
     private var isAtRight = false
     
+    private var lastUpdateTime: Double = 0
+    // MARK: -
     override func didMove(to view: SKView) {
 //        setupObstacle(view)
-        buildings.append(createBuildingParent(view))
-        
-        let bufferPosition = CGPoint(x: 0, y: buildings[0].position.y + buildings[0].frame.maxY)
-        buildings.append(createBuildingParent(view, starterPosition: bufferPosition))
-        
-        print(view.frame.minY)
-        
+        setupBuildings(view)
         setupTapGestureRecognizer()
         
         square = SKSpriteNode(color: .red, size: CGSize(width: 40, height: 40))
@@ -38,31 +35,18 @@ class GameScene: SKScene {
         addChild(square)
     }
     
+    
+    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         
-        guard let view = self.view else { return }
+        let delta = currentTime - lastUpdateTime
+        lastUpdateTime = currentTime
         
-        let maxY = buildings[0].position.y + buildings[0].children[0].frame.maxY
-        if maxY <= view.frame.minY {
-            buildings[0].removeFromParent()
-            buildings.remove(at: 0)
-        }
-        
-        if buildings.count < 3 {
-            if maxY <= view.frame.maxY + 150 {
-                let nextBuildingsYPosition = buildings.last!.position.y + buildings.last!.children[0].frame.maxY
-                buildings.append(createBuildingParent(view, starterPosition: CGPoint(x: 0, y: nextBuildingsYPosition)))
-            }
-        }
-        
-        /*
-         let foo = buildings.position.y + buildings.children[0].frame.maxY
-         if foo <= view.frame.maxY + 100 {
-         */
-        
+        updateBuildingsBuffer(delta)
     }
     
+    // MARK: - Tap
     private func setupTapGestureRecognizer() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         
@@ -86,9 +70,37 @@ class GameScene: SKScene {
         }
     }
     
+    // MARK: - Obstacle
     private func setupObstacle(_ view: SKView) {
         let obstacleHeight = view.frame.height / 6
         obstacle = SKSpriteNode(color: .red, size: CGSize(width: view.frame.width / 3, height: obstacleHeight))
+    }
+    
+    // MARK: - Buildings
+    private func updateBuildingsBuffer(_ delta: TimeInterval) {
+        guard let view = self.view else { return }
+        
+        let maxY = buildings[0].position.y + buildings[0].children[0].frame.maxY
+        if maxY <= view.frame.minY {
+            buildings[0].removeFromParent()
+            buildings.remove(at: 0)
+        }
+        
+        if buildings.count < 3 {
+            if maxY <= view.frame.maxY + 150 {
+                let nextBuildingsYPosition = buildings.last!.position.y + buildings.last!.children[0].frame.maxY - (delta * rollingSpeed / rollingDuration)
+
+                buildings.append(createBuildingParent(view, starterPosition: CGPoint(x: 0, y: nextBuildingsYPosition)))
+            }
+        }
+    }
+    
+    private func setupBuildings(_ view: SKView) {
+        buildings.append(createBuildingParent(view))
+        
+        let bufferPosition = CGPoint(x: 0, y: buildings[0].position.y + buildings[0].children[0].frame.maxY)
+        print(bufferPosition)
+        buildings.append(createBuildingParent(view, starterPosition: bufferPosition))
     }
     
     private func createBuildingParent(_ view: SKView, starterPosition: CGPoint = .zero) -> SKNode {
@@ -97,11 +109,11 @@ class GameScene: SKScene {
         
         createBuildings(view, parent: parent)
         
-        parent.run(.repeatForever(
-            .move(by: CGVector(dx: 0, dy: rollingSpeed * -1), duration: 0.01)
-        ))
-        
         self.addChild(parent)
+        
+        parent.run(.repeatForever(
+            .move(by: CGVector(dx: 0, dy: rollingSpeed * -1), duration: rollingDuration)
+        ))
         
         return parent
     }
@@ -122,4 +134,6 @@ class GameScene: SKScene {
         parent.addChild(building1)
         parent.addChild(building2)
     }
+    
+    // MARK: -
 }
