@@ -49,6 +49,17 @@ class GameScene: SKScene {
         lastUpdateTime = currentTime
         
         updateBuildingsBuffer(delta)
+        checkGameOver(mouse)
+    }
+    
+    private func checkGameOver(_ sprite: SKSpriteNode) {
+        if mouse.position.y < 0 - mouse.size.height {
+            print("game over")
+            mouse.removeAllActions()
+            for building in buildings {
+                building.removeAllActions()
+            }
+        }
     }
     
     // MARK: - Tap
