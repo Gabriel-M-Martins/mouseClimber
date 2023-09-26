@@ -61,11 +61,9 @@ class GameScene: SKScene {
             print("move sprite")
             
             if isAtRight {
-                square.anchorPoint = CGPoint(x: 0, y: 0)
-                square.position = CGPoint(x: buildings[0].children[0].frame.width, y: square.position.y)
+                square.run(.move(by: CGVector(dx: ((0 - (view?.frame.width ?? 0)) / 3) + square.frame.width, dy: 0), duration: 0.2))
             } else {
-                square.anchorPoint = CGPoint(x: 1, y: 0)
-                square.position = CGPoint(x: (view?.frame.width ?? 0) - buildings[0].children[1].frame.width, y: square.position.y)
+                square.run(.move(by: CGVector(dx: ((view?.frame.width ?? 0) / 3) - square.frame.width, dy: 0), duration: 0.2))
             }
             
             self.isAtRight.toggle()
