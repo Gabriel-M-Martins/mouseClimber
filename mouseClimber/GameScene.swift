@@ -20,8 +20,7 @@ class GameScene: SKScene {
     
     private var buildings: [SKNode] = []
     
-    private var obstacles: [SKNode] = []
-    private var obstacle: SKSpriteNode = SKSpriteNode()
+    private var fallingObjects: [(case: FallingObjects, node: SKNode)] = []
     
     private var mouse = SKSpriteNode()
     
@@ -32,7 +31,7 @@ class GameScene: SKScene {
     // MARK: -
     override func didMove(to view: SKView) {
         setupBuildings(view)
-        
+        setupFallingObjects()
         setupTapGestureRecognizer()
         
         mouse = SKSpriteNode(color: .red, size: CGSize(width: 40, height: 40))
@@ -111,6 +110,40 @@ class GameScene: SKScene {
         }
     }
     
+    // MARK: - Falling Objects
+    private func setupFallingObjects() {
+        self.run(.repeatForever(.sequence([
+            .run { [weak self] in
+                guard let s = self else { return }
+                s.spawnFallingObject(yPosition: s.buildings.last!.children[0].frame.maxY)
+            },
+            .wait(forDuration: .random(in: 1...(1 + 10/Double(obstacleFrequency))))
+        ])))
+    }
+    
+    private func spawnFallingObject(yPosition: CGFloat) {
+        guard let view = self.view else { return }
+        
+        let buildingWidth = buildings[0].children[0].frame.width
+        let usableWidth = (start: buildingWidth, end: view.frame.maxX - buildingWidth)
+        
+        let fallingObject = FallingObjects.allCases.randomElement()!
+        let fallingObjectSprite = fallingObject.sprite()
+        
+        let scale = ( (usableWidth.end - usableWidth.start) / 4) / fallingObjectSprite.size.width
+        
+        let fallingObjectNode = SKSpriteNode(texture: SKTexture(image: fallingObjectSprite), size: CGSize(width: fallingObjectSprite.size.width * scale, height: fallingObjectSprite.size.height * scale))
+        fallingObjectNode.anchorPoint = .zero
+        fallingObjectNode.position = CGPoint(x: .random(in: usableWidth.start...usableWidth.end-fallingObjectNode.size.width), y: yPosition)
+        
+        fallingObjectNode.run(.repeatForever(
+            .move(by: CGVector(dx: 0, dy: rollingSpeed * -1 * (fallingObject.fallsFast ? 1.5 : 1) ), duration: rollingDuration)
+        ))
+        
+        fallingObjects.append((fallingObject, fallingObjectNode))
+        self.addChild(fallingObjectNode)
+    }
+    
     // MARK: - Buildings
     private func updateBuildingsBuffer(_ delta: TimeInterval) {
         guard let view = self.view else { return }
@@ -125,7 +158,7 @@ class GameScene: SKScene {
             if maxY <= view.frame.maxY + 150 {
                 let nextBuildingsYPosition = buildings.last!.position.y + buildings.last!.children[0].frame.maxY - (delta * rollingSpeed / rollingDuration)
                 
-                let newBuildings = createBuildingParent(view, starterPosition: CGPoint(x: 0, y: nextBuildingsYPosition))
+                let newBuildings = spawnBuildingsParent(view, starterPosition: CGPoint(x: 0, y: nextBuildingsYPosition))
                 
                 buildings.append(newBuildings)
             }
@@ -133,19 +166,18 @@ class GameScene: SKScene {
     }
     
     private func setupBuildings(_ view: SKView) {
-        buildings.append(createBuildingParent(view))
+        buildings.append(spawnBuildingsParent(view))
         
         let bufferPosition = CGPoint(x: 0, y: buildings[0].position.y + buildings[0].children[0].frame.maxY)
-        let bufferBuildings = createBuildingParent(view, starterPosition: bufferPosition)
-        
+        let bufferBuildings = spawnBuildingsParent(view, starterPosition: bufferPosition)
         buildings.append(bufferBuildings)
     }
     
-    private func createBuildingParent(_ view: SKView, starterPosition: CGPoint = .zero) -> SKNode {
+    private func spawnBuildingsParent(_ view: SKView, starterPosition: CGPoint = .zero) -> SKNode {
         let parent = SKNode()
         parent.position = starterPosition
         
-        createBuildings(view, parent: parent)
+        spawnBuildings(view, parent: parent)
         
         self.addChild(parent)
         
@@ -156,7 +188,7 @@ class GameScene: SKScene {
         return parent
     }
     
-    private func createBuildings(_ view: SKView, parent: SKNode) {
+    private func spawnBuildings(_ view: SKView, parent: SKNode) {
         let buildingWidth: CGFloat = view.frame.width / 3
         let buildingHeight: CGFloat = ((view.frame.maxY / buildingWidth).rounded()) * buildingWidth * 2
         

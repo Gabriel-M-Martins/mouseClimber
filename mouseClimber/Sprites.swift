@@ -62,3 +62,45 @@ enum ObstacleTiles: CaseIterable {
         }
     }
 }
+
+enum FallingObjects: CaseIterable {
+    case Cheese
+    case Obstacle
+    
+    private static var storedSprites: [Self : UIImage] = [:]
+    
+    var fallsFast: Bool {
+        switch self {
+        case .Cheese:
+            return false
+        case .Obstacle:
+            return true
+        }
+    }
+    
+    func sprite() -> UIImage {
+        switch self {
+        case .Cheese:
+            let img: UIImage
+            
+            if let foo = Self.storedSprites[self] {
+                img = foo
+            } else {
+                img = UIImage(named: "building0") ?? UIImage()
+                _ = Self.storedSprites.updateValue(img, forKey: self)
+            }
+            return img
+        
+        case .Obstacle:
+            let img: UIImage
+            
+            if let foo = Self.storedSprites[self] {
+                img = foo
+            } else {
+                img = UIImage(named: "building0") ?? UIImage()
+                _ = Self.storedSprites.updateValue(img, forKey: self)
+            }
+            return img
+        }
+    }
+}
