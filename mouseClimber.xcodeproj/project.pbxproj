@@ -42,13 +42,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A71E5EB72AC2745800109B5C /* New Group */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "New Group";
-			sourceTree = "<group>";
-		};
 		A79AB2D02AC207770008243F = {
 			isa = PBXGroup;
 			children = (
@@ -72,7 +65,6 @@
 				A79AB2DE2AC207770008243F /* GameScene.sks */,
 				A79AB2E02AC207770008243F /* Actions.sks */,
 				A79AB2E22AC207770008243F /* GameScene.swift */,
-				A71E5EB72AC2745800109B5C /* New Group */,
 				A79AB2E42AC207770008243F /* GameViewController.swift */,
 				A79AB2E62AC207770008243F /* Main.storyboard */,
 				A79AB2E92AC207780008243F /* Assets.xcassets */,
