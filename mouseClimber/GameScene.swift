@@ -8,6 +8,7 @@
 import SpriteKit
 import GameplayKit
 import ARKit
+import AVFoundation
 
 enum Side {
     case right, left
@@ -25,6 +26,9 @@ class GameScene: SKScene, ARSessionDelegate {
     private var rollingDuration: Double = 0.01
     
     private var obstacleFrequency: Int = 10
+    
+    var audioPlayer: AVAudioPlayer?
+    var audioGameOver: AVAudioPlayer?
     
     private var isJumping = false
     
@@ -55,6 +59,22 @@ class GameScene: SKScene, ARSessionDelegate {
         addChild(mouse)
         
         mouse.run(.repeatForever(.move(by: CGVector(dx: 0, dy: (rollingSpeed * -1)/2 ), duration: rollingDuration)))
+        
+        if let soundURL = Bundle.main.url(forResource: "backgroundMusic", withExtension: "wav") {
+            do {
+                audioPlayer = try? AVAudioPlayer(contentsOf: soundURL)
+            } catch {
+                print("Erro ao carregar soundURL")
+            }
+        }
+        
+        if let soundURL2 = Bundle.main.url(forResource: "gameOver", withExtension: "wav") {
+            do {
+                audioGameOver = try? AVAudioPlayer(contentsOf: soundURL2)
+            } catch {
+                print("Erro ao carregar soundURL2")
+            }
+        }
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -65,6 +85,7 @@ class GameScene: SKScene, ARSessionDelegate {
 //        updateFallingObjects()
         
         if !isGameOver {
+            audioPlayer?.play()
             checkGameOver(mouse)
         }
     }
@@ -75,6 +96,8 @@ class GameScene: SKScene, ARSessionDelegate {
             createGameOverLabels()
             guard let scene = self.scene else { return }
             scene.removeAllActions()
+            audioPlayer?.pause()
+            audioGameOver?.play()
         }
     }
     
