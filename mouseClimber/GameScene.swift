@@ -78,12 +78,9 @@ class GameScene: SKScene {
             buildings.remove(at: 0)
         }
         
-        if buildings.count < 3 {
+        if buildings.count < 2 {
             if maxY <= view.frame.maxY + 150 {
                 let nextBuildingsYPosition = buildings.last!.position.y + buildings.last!.children[0].frame.maxY - (delta * rollingSpeed / rollingDuration)
-                
-                let foo = buildings.last!.position
-                print(foo)
                 
                 let newBuildings = createBuildingParent(view, starterPosition: CGPoint(x: 0, y: nextBuildingsYPosition))
                 
@@ -120,8 +117,8 @@ class GameScene: SKScene {
         let buildingWidth: CGFloat = view.frame.width / 3
         let buildingHeight: CGFloat = ((view.frame.maxY / buildingWidth).rounded()) * buildingWidth * 2
         
-        let building1 = SKSpriteNode(color: .blue, size: CGSize(width: buildingWidth, height: buildingHeight))
-        let building2 = SKSpriteNode(color: .blue, size: CGSize(width: buildingWidth, height: buildingHeight))
+        let building1 = SKSpriteNode(color: .clear, size: CGSize(width: buildingWidth, height: buildingHeight))
+        let building2 = SKSpriteNode(color: .clear, size: CGSize(width: buildingWidth, height: buildingHeight))
 
         building1.anchorPoint = CGPoint(x: 0, y: 0)
         building2.anchorPoint = CGPoint(x: 1, y: 0)
@@ -131,14 +128,35 @@ class GameScene: SKScene {
           
         building1.zPosition = -10
         building2.zPosition = -10
-
-        let scale = buildingWidth / Settings.Building.size.width
+        
+        var obstaclesCreated: Int = 0
+        
+        // TODO: otimizar isso, aparentemente dá pra renderizar tudo numa só chamada quando a sprite usa a mesma SKTexture (https://developer.apple.com/documentation/spritekit/nodes_for_scene_building/maximizing_node_drawing_performance)
         for i in 0..<Int(buildingHeight/buildingWidth) {
-            let rndTileSprite1 = BuildingTiles.allCases.randomElement()!.sprite()
-            let rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite()
             
-            let tile1 = SKSpriteNode(texture: SKTexture(image: rndTileSprite1), size: CGSize(width: rndTileSprite1.size.width * scale, height: rndTileSprite1.size.height * scale))
-            let tile2 = SKSpriteNode(texture: SKTexture(image: rndTileSprite2), size: CGSize(width: rndTileSprite2.size.width * scale, height: rndTileSprite2.size.height * scale))
+            let rndTileSprite1: UIImage
+            let rndTileSprite2: UIImage
+            
+            if obstaclesCreated < obstacleFrequency && Bool.random() {
+                if Bool.random() {
+                    rndTileSprite1 = ObstacleTiles.allCases.randomElement()!.sprite()
+                    rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite()
+                } else {
+                    rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite()
+                    rndTileSprite1 = ObstacleTiles.allCases.randomElement()!.sprite()
+                }
+                
+                obstaclesCreated += 1
+            } else {
+                rndTileSprite1 = BuildingTiles.allCases.randomElement()!.sprite()
+                rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite()
+            }
+            
+            let scale1 = buildingWidth / rndTileSprite1.size.width
+            let scale2 = buildingWidth / rndTileSprite2.size.width
+            
+            let tile1 = SKSpriteNode(texture: SKTexture(image: rndTileSprite1), size: CGSize(width: rndTileSprite1.size.width * scale1, height: rndTileSprite1.size.height * scale1))
+            let tile2 = SKSpriteNode(texture: SKTexture(image: rndTileSprite2), size: CGSize(width: rndTileSprite2.size.width * scale2, height: rndTileSprite2.size.height * scale2))
             
             tile1.anchorPoint = CGPoint(x: 0, y: 0)
             tile2.anchorPoint = CGPoint(x: 1, y: 0)
@@ -154,47 +172,63 @@ class GameScene: SKScene {
         parent.addChild(building2)
     }
     
-    // MARK: -
 }
 
-enum Obstacle: CaseIterable {
-    case cat
-    case cheese
-}
+// MARK: - Sprites
 
-enum BuildingTiles: CaseIterable {
-    case building
-//    case cat
+// TODO: 1. Mover isso tudo pra um arquivo próprio.
+// TODO: 2. storedSprites guardar uma lista de UIImage inves de só uma p poder criar animação e tal.
+
+enum BuildingTiles: CaseIterable, Hashable {
+    case Building1
+    case Building2
+    
+    private static var storedSprites: [Self : UIImage] = [:]
     
     func sprite() -> UIImage {
         switch self {
-        case .building:
-            return Settings.Building.sprites.randomElement() ?? UIImage()
-//        case .cat:
-//            return Settings.Cat.sprites.randomElement() ?? UIImage()
+        case .Building1:
+            let img: UIImage
+            
+            if let foo = Self.storedSprites[self] {
+                img = foo
+            } else {
+                img = UIImage(named: "building0") ?? UIImage()
+                _ = Self.storedSprites.updateValue(img, forKey: self)
+            }
+            return img
+            
+        case .Building2:
+            let img: UIImage
+            
+            if let foo = Self.storedSprites[self] {
+                img = foo
+            } else {
+                img = UIImage(named: "building0") ?? UIImage()
+                _ = Self.storedSprites.updateValue(img, forKey: self)
+            }
+            return img
         }
     }
 }
 
-struct Settings {
-    struct Building {
-        static var size: CGSize = {
-            return Self.sprites.first?.size ?? .zero
-        }()
-        
-        
-        static var sprites: [UIImage] = {
-            var result = [UIImage]()
-            for i in 0..<3 {
-                if let img = UIImage(named: "building\(i)") {
-                    result.append(img)
-                }
-            }
-            return result
-        }()
-    }
+enum ObstacleTiles: CaseIterable {
+    case Cat
     
-    struct Cat {
-        static var sprites = [UIImage]()
+    private static var storedSprites: [Self : UIImage] = [:]
+    
+    func sprite() -> UIImage {
+        switch self {
+        case .Cat:
+            let img: UIImage
+            
+            if let foo = Self.storedSprites[self] {
+                img = foo
+            } else {
+                img = UIImage(named: "cat0") ?? UIImage()
+                _ = Self.storedSprites.updateValue(img, forKey: self)
+            }
+            return img
+        }
     }
 }
