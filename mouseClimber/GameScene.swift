@@ -52,6 +52,7 @@ class GameScene: SKScene {
         lastUpdateTime = currentTime
         
         updateBuildingsBuffer(delta)
+//        updateFallingObjects()
         
         if !isGameOver {
             checkGameOver(mouse)
@@ -128,11 +129,12 @@ class GameScene: SKScene {
         let usableWidth = (start: buildingWidth, end: view.frame.maxX - buildingWidth)
         
         let fallingObject = FallingObjects.allCases.randomElement()!
-        let fallingObjectSprite = fallingObject.sprite()
         
-        let scale = ( (usableWidth.end - usableWidth.start) / 4) / fallingObjectSprite.size.width
+        let size = CGSize(width: (usableWidth.end - usableWidth.start) / 4, height: (usableWidth.end - usableWidth.start) / 4)
+        let fallingObjectSprite = fallingObject.sprite(ofSize: size)
         
-        let fallingObjectNode = SKSpriteNode(texture: SKTexture(image: fallingObjectSprite), size: CGSize(width: fallingObjectSprite.size.width * scale, height: fallingObjectSprite.size.height * scale))
+        let fallingObjectNode = SKSpriteNode(texture: fallingObjectSprite)
+        
         fallingObjectNode.anchorPoint = .zero
         fallingObjectNode.position = CGPoint(x: .random(in: usableWidth.start...usableWidth.end-fallingObjectNode.size.width), y: yPosition)
         
@@ -192,6 +194,8 @@ class GameScene: SKScene {
         let buildingWidth: CGFloat = view.frame.width / 3
         let buildingHeight: CGFloat = ((view.frame.maxY / buildingWidth).rounded()) * buildingWidth * 2
         
+        let tileSize = CGSize(width: buildingWidth, height: buildingWidth)
+        
         let building1 = SKSpriteNode(color: .clear, size: CGSize(width: buildingWidth, height: buildingHeight))
         let building2 = SKSpriteNode(color: .clear, size: CGSize(width: buildingWidth, height: buildingHeight))
 
@@ -208,30 +212,26 @@ class GameScene: SKScene {
         
         // TODO: otimizar isso, aparentemente dá pra renderizar tudo numa só chamada quando a sprite usa a mesma SKTexture (https://developer.apple.com/documentation/spritekit/nodes_for_scene_building/maximizing_node_drawing_performance)
         for i in 0..<Int(buildingHeight/buildingWidth) {
-            
-            let rndTileSprite1: UIImage
-            let rndTileSprite2: UIImage
+            let rndTileSprite1: SKTexture
+            let rndTileSprite2: SKTexture
             
             if obstaclesCreated < obstacleFrequency && Bool.random() {
                 if Bool.random() {
-                    rndTileSprite1 = ObstacleTiles.allCases.randomElement()!.sprite()
-                    rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite()
+                    rndTileSprite1 = ObstacleTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
+                    rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
                 } else {
-                    rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite()
-                    rndTileSprite1 = ObstacleTiles.allCases.randomElement()!.sprite()
+                    rndTileSprite1 = BuildingTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
+                    rndTileSprite2 = ObstacleTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
                 }
                 
                 obstaclesCreated += 1
             } else {
-                rndTileSprite1 = BuildingTiles.allCases.randomElement()!.sprite()
-                rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite()
+                rndTileSprite1 = BuildingTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
+                rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
             }
             
-            let scale1 = buildingWidth / rndTileSprite1.size.width
-            let scale2 = buildingWidth / rndTileSprite2.size.width
-            
-            let tile1 = SKSpriteNode(texture: SKTexture(image: rndTileSprite1), size: CGSize(width: rndTileSprite1.size.width * scale1, height: rndTileSprite1.size.height * scale1))
-            let tile2 = SKSpriteNode(texture: SKTexture(image: rndTileSprite2), size: CGSize(width: rndTileSprite2.size.width * scale2, height: rndTileSprite2.size.height * scale2))
+            let tile1 = SKSpriteNode(texture: rndTileSprite1)
+            let tile2 = SKSpriteNode(texture: rndTileSprite2)
             
             tile1.anchorPoint = CGPoint(x: 0, y: 0)
             tile2.anchorPoint = CGPoint(x: 1, y: 0)
