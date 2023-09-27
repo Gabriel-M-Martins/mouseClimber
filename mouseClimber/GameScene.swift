@@ -9,6 +9,8 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene {
+    private var isGameOver: Bool = false
+    
     private var rollingSpeed: CGFloat = 3
     private var rollingDuration: Double = 0.01
     
@@ -51,17 +53,38 @@ class GameScene: SKScene {
         lastUpdateTime = currentTime
         
         updateBuildingsBuffer(delta)
-        checkGameOver(mouse)
+        
+        if !isGameOver {
+            checkGameOver(mouse)
+        }
     }
     
     private func checkGameOver(_ sprite: SKSpriteNode) {
         if mouse.position.y < 0 - mouse.size.height {
-            print("game over")
-            mouse.removeAllActions()
-            for building in buildings {
-                building.removeAllActions()
-            }
+            self.isGameOver = true
+            createGameOverLabels()
+            guard let scene = self.scene else { return }
+            scene.removeAllActions()
         }
+    }
+    
+    private func createGameOverLabels() {
+        guard let view = self.view else { return }
+        
+        let gameOverLabel = SKLabelNode(text: "Game Over")
+        gameOverLabel.position = CGPoint(x: view.frame.midX, y: view.frame.midY)
+                addChild(gameOverLabel)
+                
+        let restartButton = SKLabelNode(text: "Restart")
+        restartButton.position = CGPoint(x: view.frame.midX, y: self.size.height / 3)
+        restartButton.name = "restartButton"
+        addChild(restartButton)
+    }
+    
+    private func restartGame() {
+        guard let view = self.view else { return }
+        let mainScene = GameScene(size: view.frame.size)
+        view.presentScene(mainScene)
     }
     
     // MARK: - Tap
@@ -190,5 +213,16 @@ class GameScene: SKScene {
         parent.addChild(building2)
     }
 
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            if let node = atPoint(location) as? SKLabelNode {
+                if node.name == "restartButton" {
+                    // Transition back to the main game scene to restart the game
+                    restartGame()
+                }
+            }
+        }
+    }
     
 }
