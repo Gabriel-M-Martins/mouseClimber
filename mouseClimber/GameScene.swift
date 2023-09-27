@@ -52,7 +52,7 @@ class GameScene: SKScene {
         lastUpdateTime = currentTime
         
         updateBuildingsBuffer(delta)
-//        updateFallingObjects()
+        updateFallingObjects()
         
         if !isGameOver {
             checkGameOver(mouse)
@@ -120,6 +120,13 @@ class GameScene: SKScene {
             },
             .wait(forDuration: .random(in: 1...(1 + 10/Double(obstacleFrequency))))
         ])))
+    }
+    
+    private func updateFallingObjects() {
+        if fallingObjects.count > 0 && fallingObjects[0].node.position.y < self.view?.frame.minY ?? 0 {
+            fallingObjects[0].node.removeFromParent()
+            fallingObjects.remove(at: 0)
+        }
     }
     
     private func spawnFallingObject(yPosition: CGFloat) {
