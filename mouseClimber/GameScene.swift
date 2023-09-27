@@ -43,7 +43,7 @@ class GameScene: SKScene {
         
         addChild(mouse)
         
-        mouse.run(.repeatForever(.move(by: CGVector(dx: 0, dy: -10), duration: 0.1)))
+        mouse.run(.repeatForever(.move(by: CGVector(dx: 0, dy: (rollingSpeed * -1)/2 ), duration: rollingDuration)))
     }
     
     override func update(_ currentTime: TimeInterval) {
