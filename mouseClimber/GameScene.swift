@@ -7,8 +7,18 @@
 
 import SpriteKit
 import GameplayKit
+import ARKit
 
-class GameScene: SKScene {
+enum Side {
+    case right, left
+}
+
+class GameScene: SKScene, ARSessionDelegate {
+    let arSession = ARSession()
+    let faceTrackingConfiguration = ARFaceTrackingConfiguration()
+    
+    private var currentSide: Side = .left
+    
     private var isGameOver: Bool = false
     
     private var rollingSpeed: CGFloat = 3
@@ -24,15 +34,15 @@ class GameScene: SKScene {
     
     private var mouse = SKSpriteNode()
     
-    private var isAtRight = false
-    
     private var lastUpdateTime: Double = 0
     
     // MARK: -
     override func didMove(to view: SKView) {
+        arSession.run(faceTrackingConfiguration)
+        arSession.delegate = self
+        
         setupBuildings(view)
         setupFallingObjects()
-        setupTapGestureRecognizer()
         
         mouse = SKSpriteNode(color: .red, size: CGSize(width: 40, height: 40))
         mouse.anchorPoint = CGPoint(x: 0, y: 0)
@@ -86,26 +96,35 @@ class GameScene: SKScene {
         view.presentScene(mainScene)
     }
     
-    // MARK: - Tap
-    private func setupTapGestureRecognizer() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        
-        tapGesture.numberOfTapsRequired = 1
-        tapGesture.numberOfTouchesRequired = 1
-        
-        self.view?.addGestureRecognizer(tapGesture)
+    // MARK: - Mouth Movement
+    func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
+        if let currentFrame = arSession.currentFrame,
+           let faceAnchor = currentFrame.anchors.first(where: { $0 is ARFaceAnchor }) as? ARFaceAnchor {
+            
+            // Access face tracking data from the ARFaceAnchor object.
+            let blendShapes = faceAnchor.blendShapes
+            
+            // Use this data to update your SpriteKit scene.
+            updateSpriteKitScene(withBlendShapes: blendShapes)
+        }
     }
     
-    @objc func handleTap(_ sender: UITapGestureRecognizer) {
-        if sender.state == .recognized {
-            if !isGameOver {
-                if isAtRight {
-                    mouse.run(.move(by: CGVector(dx: ((0 - (view?.frame.width ?? 0)) / 3) + mouse.frame.width, dy: 100), duration: 0.1))
-                } else {
-                    mouse.run(.move(by: CGVector(dx: ((view?.frame.width ?? 0) / 3) - mouse.frame.width, dy: 100), duration: 0.1))
+    func updateSpriteKitScene(withBlendShapes blendShapes: [ARFaceAnchor.BlendShapeLocation: NSNumber]) {
+        if !isGameOver {
+            guard let mouthRight = blendShapes[.mouthLeft] as? CGFloat, let mouthLeft = blendShapes[.mouthRight] as? CGFloat else { return }
+
+            guard let view = self.view else { return }
+            
+            if mouthLeft > mouthRight {
+                if mouthLeft > 0.5 && self.currentSide == .right {
+                    self.currentSide = .left
+                    mouse.run(.move(to: CGPoint(x: buildings[0].children[0].frame.width, y: mouse.position.y + 100), duration: 0.1))
                 }
-                
-                self.isAtRight.toggle()
+            } else {
+                if mouthRight > 0.5 && self.currentSide == .left {
+                    self.currentSide = .right
+                    mouse.run(.move(to: CGPoint(x: view.frame.width - buildings[0].children[0].frame.width - mouse.frame.width, y: mouse.position.y + 100), duration: 0.1))
+                }
             }
         }
     }
@@ -258,5 +277,4 @@ class GameScene: SKScene {
             }
         }
     }
-    
 }
