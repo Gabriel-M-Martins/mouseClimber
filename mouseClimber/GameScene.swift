@@ -99,13 +99,15 @@ class GameScene: SKScene {
     
     @objc func handleTap(_ sender: UITapGestureRecognizer) {
         if sender.state == .recognized {
-            if isAtRight {
-                mouse.run(.move(by: CGVector(dx: ((0 - (view?.frame.width ?? 0)) / 3) + mouse.frame.width, dy: 100), duration: 0.1))
-            } else {
-                mouse.run(.move(by: CGVector(dx: ((view?.frame.width ?? 0) / 3) - mouse.frame.width, dy: 100), duration: 0.1))
+            if !isGameOver {
+                if isAtRight {
+                    mouse.run(.move(by: CGVector(dx: ((0 - (view?.frame.width ?? 0)) / 3) + mouse.frame.width, dy: 100), duration: 0.1))
+                } else {
+                    mouse.run(.move(by: CGVector(dx: ((view?.frame.width ?? 0) / 3) - mouse.frame.width, dy: 100), duration: 0.1))
+                }
+                
+                self.isAtRight.toggle()
             }
-            
-            self.isAtRight.toggle()
         }
     }
     
