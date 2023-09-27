@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A73C1BBE2AC4A9A90015E21A /* Sprites.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73C1BBD2AC4A9A90015E21A /* Sprites.swift */; };
 		68A9BD502AC4AB1600834141 /* SKButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */; };
+		A73C1BBE2AC4A9A90015E21A /* Sprites.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73C1BBD2AC4A9A90015E21A /* Sprites.swift */; };
 		A79AB2DD2AC207770008243F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79AB2DC2AC207770008243F /* AppDelegate.swift */; };
 		A79AB2DF2AC207770008243F /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = A79AB2DE2AC207770008243F /* GameScene.sks */; };
 		A79AB2E12AC207770008243F /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = A79AB2E02AC207770008243F /* Actions.sks */; };
@@ -20,8 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A73C1BBD2AC4A9A90015E21A /* Sprites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sprites.swift; sourceTree = "<group>"; };
 		68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKButtonNode.swift; sourceTree = "<group>"; };
+		A73C1BBD2AC4A9A90015E21A /* Sprites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sprites.swift; sourceTree = "<group>"; };
 		A79AB2D92AC207770008243F /* mouseClimber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mouseClimber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A79AB2DC2AC207770008243F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A79AB2DE2AC207770008243F /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -67,12 +67,12 @@
 				A79AB2DE2AC207770008243F /* GameScene.sks */,
 				A79AB2E02AC207770008243F /* Actions.sks */,
 				A79AB2E22AC207770008243F /* GameScene.swift */,
+				A73C1BBD2AC4A9A90015E21A /* Sprites.swift */,
 				68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */,
 				A79AB2E42AC207770008243F /* GameViewController.swift */,
 				A79AB2E62AC207770008243F /* Main.storyboard */,
 				A79AB2E92AC207780008243F /* Assets.xcassets */,
 				A79AB2EB2AC207780008243F /* LaunchScreen.storyboard */,
-				A73C1BBD2AC4A9A90015E21A /* Sprites.swift */,
 			);
 			path = mouseClimber;
 			sourceTree = "<group>";
