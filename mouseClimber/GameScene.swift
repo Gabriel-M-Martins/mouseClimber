@@ -11,13 +11,16 @@ import GameplayKit
 class GameScene: SKScene {
     private var isGameOver: Bool = false
     
-    private var rollingSpeed: CGFloat = 5
+    private var rollingSpeed: CGFloat = 3
     private var rollingDuration: Double = 0.01
+    
+    private var obstacleFrequency: Int = 10
     
     private var isJumping = false
     
     private var buildings: [SKNode] = []
     
+    private var obstacles: [SKNode] = []
     private var obstacle: SKSpriteNode = SKSpriteNode()
     
     private var mouse = SKSpriteNode()
@@ -25,10 +28,11 @@ class GameScene: SKScene {
     private var isAtRight = false
     
     private var lastUpdateTime: Double = 0
+    
     // MARK: -
     override func didMove(to view: SKView) {
-//        setupObstacle(view)
         setupBuildings(view)
+        
         setupTapGestureRecognizer()
         
         mouse = SKSpriteNode(color: .red, size: CGSize(width: 40, height: 40))
@@ -41,12 +45,10 @@ class GameScene: SKScene {
         
         addChild(mouse)
         
-        mouse.run(.repeatForever(.move(by: CGVector(dx: 0, dy: -10), duration: 0.1)))
+        mouse.run(.repeatForever(.move(by: CGVector(dx: 0, dy: (rollingSpeed * -1)/2 ), duration: rollingDuration)))
     }
     
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
-        
         let delta = currentTime - lastUpdateTime
         lastUpdateTime = currentTime
         
@@ -94,11 +96,9 @@ class GameScene: SKScene {
         
         self.view?.addGestureRecognizer(tapGesture)
     }
-        
+    
     @objc func handleTap(_ sender: UITapGestureRecognizer) {
         if sender.state == .recognized {
-            print("move sprite")
-            
             if isAtRight {
                 mouse.run(.move(by: CGVector(dx: ((0 - (view?.frame.width ?? 0)) / 3) + mouse.frame.width, dy: 100), duration: 0.1))
             } else {
@@ -107,12 +107,6 @@ class GameScene: SKScene {
             
             self.isAtRight.toggle()
         }
-    }
-    
-    // MARK: - Obstacle
-    private func setupObstacle(_ view: SKView) {
-        let obstacleHeight = view.frame.height / 6
-        obstacle = SKSpriteNode(color: .red, size: CGSize(width: view.frame.width / 3, height: obstacleHeight))
     }
     
     // MARK: - Buildings
@@ -125,11 +119,13 @@ class GameScene: SKScene {
             buildings.remove(at: 0)
         }
         
-        if buildings.count < 3 {
+        if buildings.count < 2 {
             if maxY <= view.frame.maxY + 150 {
                 let nextBuildingsYPosition = buildings.last!.position.y + buildings.last!.children[0].frame.maxY - (delta * rollingSpeed / rollingDuration)
-
-                buildings.append(createBuildingParent(view, starterPosition: CGPoint(x: 0, y: nextBuildingsYPosition)))
+                
+                let newBuildings = createBuildingParent(view, starterPosition: CGPoint(x: 0, y: nextBuildingsYPosition))
+                
+                buildings.append(newBuildings)
             }
         }
     }
@@ -138,8 +134,9 @@ class GameScene: SKScene {
         buildings.append(createBuildingParent(view))
         
         let bufferPosition = CGPoint(x: 0, y: buildings[0].position.y + buildings[0].children[0].frame.maxY)
-        print(bufferPosition)
-        buildings.append(createBuildingParent(view, starterPosition: bufferPosition))
+        let bufferBuildings = createBuildingParent(view, starterPosition: bufferPosition)
+        
+        buildings.append(bufferBuildings)
     }
     
     private func createBuildingParent(_ view: SKView, starterPosition: CGPoint = .zero) -> SKNode {
@@ -158,17 +155,59 @@ class GameScene: SKScene {
     }
     
     private func createBuildings(_ view: SKView, parent: SKNode) {
-        let buildingWidth = view.frame.width / 3
-        let buildingHeight = view.frame.height * 2
+        let buildingWidth: CGFloat = view.frame.width / 3
+        let buildingHeight: CGFloat = ((view.frame.maxY / buildingWidth).rounded()) * buildingWidth * 2
         
-        let building1 = SKSpriteNode(color: .blue, size: CGSize(width: buildingWidth, height: buildingHeight))
-        let building2 = SKSpriteNode(color: .blue, size: CGSize(width: buildingWidth, height: buildingHeight))
-        
+        let building1 = SKSpriteNode(color: .clear, size: CGSize(width: buildingWidth, height: buildingHeight))
+        let building2 = SKSpriteNode(color: .clear, size: CGSize(width: buildingWidth, height: buildingHeight))
+
         building1.anchorPoint = CGPoint(x: 0, y: 0)
         building2.anchorPoint = CGPoint(x: 1, y: 0)
         
         building1.position = CGPoint(x: 0, y: 0)
         building2.position = CGPoint(x: view.frame.maxX, y: 0)
+          
+        building1.zPosition = -10
+        building2.zPosition = -10
+        
+        var obstaclesCreated: Int = 0
+        
+        // TODO: otimizar isso, aparentemente dá pra renderizar tudo numa só chamada quando a sprite usa a mesma SKTexture (https://developer.apple.com/documentation/spritekit/nodes_for_scene_building/maximizing_node_drawing_performance)
+        for i in 0..<Int(buildingHeight/buildingWidth) {
+            
+            let rndTileSprite1: UIImage
+            let rndTileSprite2: UIImage
+            
+            if obstaclesCreated < obstacleFrequency && Bool.random() {
+                if Bool.random() {
+                    rndTileSprite1 = ObstacleTiles.allCases.randomElement()!.sprite()
+                    rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite()
+                } else {
+                    rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite()
+                    rndTileSprite1 = ObstacleTiles.allCases.randomElement()!.sprite()
+                }
+                
+                obstaclesCreated += 1
+            } else {
+                rndTileSprite1 = BuildingTiles.allCases.randomElement()!.sprite()
+                rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite()
+            }
+            
+            let scale1 = buildingWidth / rndTileSprite1.size.width
+            let scale2 = buildingWidth / rndTileSprite2.size.width
+            
+            let tile1 = SKSpriteNode(texture: SKTexture(image: rndTileSprite1), size: CGSize(width: rndTileSprite1.size.width * scale1, height: rndTileSprite1.size.height * scale1))
+            let tile2 = SKSpriteNode(texture: SKTexture(image: rndTileSprite2), size: CGSize(width: rndTileSprite2.size.width * scale2, height: rndTileSprite2.size.height * scale2))
+            
+            tile1.anchorPoint = CGPoint(x: 0, y: 0)
+            tile2.anchorPoint = CGPoint(x: 1, y: 0)
+            
+            tile1.position = CGPoint(x: 0, y: CGFloat(i) * tile1.frame.height)
+            tile2.position = CGPoint(x: 0, y: CGFloat(i) * tile2.frame.height)
+            
+            building1.addChild(tile1)
+            building2.addChild(tile2)
+        }
         
         parent.addChild(building1)
         parent.addChild(building2)
@@ -186,5 +225,4 @@ class GameScene: SKScene {
         }
     }
     
-    // MARK: -
 }
