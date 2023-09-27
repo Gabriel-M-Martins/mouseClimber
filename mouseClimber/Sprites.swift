@@ -7,37 +7,40 @@
 
 import Foundation
 import UIKit
+import SpriteKit
 
 // TODO: storedSprites guardar uma lista de UIImage inves de só uma p poder criar animação e tal.
-enum BuildingTiles: CaseIterable, Hashable {
+enum BuildingTiles: CaseIterable {
     case Building1
     case Building2
     
-    private static var storedSprites: [Self : UIImage] = [:]
+    private static var storedSprites: [Self : SKTexture] = [:]
     
-    func sprite() -> UIImage {
+    func sprite(ofSize size: CGSize) -> SKTexture {
         switch self {
         case .Building1:
-            let img: UIImage
+            var texture: SKTexture
             
-            if let foo = Self.storedSprites[self] {
-                img = foo
+            if let storedTexture = Self.storedSprites[self] {
+                texture = storedTexture
             } else {
-                img = UIImage(named: "building0") ?? UIImage()
-                _ = Self.storedSprites.updateValue(img, forKey: self)
+                let img = (UIImage(named: "building0") ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
+                texture = SKTexture(image: img)
+                _ = Self.storedSprites.updateValue(texture, forKey: self)
             }
-            return img
+            return texture
             
         case .Building2:
-            let img: UIImage
+            var texture: SKTexture
             
-            if let foo = Self.storedSprites[self] {
-                img = foo
+            if let storedTexture = Self.storedSprites[self] {
+                texture = storedTexture
             } else {
-                img = UIImage(named: "building0") ?? UIImage()
-                _ = Self.storedSprites.updateValue(img, forKey: self)
+                let img = (UIImage(named: "building0") ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
+                texture = SKTexture(image: img)
+                _ = Self.storedSprites.updateValue(texture, forKey: self)
             }
-            return img
+            return texture
         }
     }
 }
@@ -45,20 +48,21 @@ enum BuildingTiles: CaseIterable, Hashable {
 enum ObstacleTiles: CaseIterable {
     case Cat
     
-    private static var storedSprites: [Self : UIImage] = [:]
+    private static var storedSprites: [Self : SKTexture] = [:]
     
-    func sprite() -> UIImage {
+    func sprite(ofSize size: CGSize) -> SKTexture {
         switch self {
         case .Cat:
-            let img: UIImage
+            var texture: SKTexture
             
-            if let foo = Self.storedSprites[self] {
-                img = foo
+            if let storedTexture = Self.storedSprites[self] {
+                texture = storedTexture
             } else {
-                img = UIImage(named: "cat0") ?? UIImage()
-                _ = Self.storedSprites.updateValue(img, forKey: self)
+                let img = (UIImage(named: "building0") ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
+                texture = SKTexture(image: img)
+                _ = Self.storedSprites.updateValue(texture, forKey: self)
             }
-            return img
+            return texture
         }
     }
 }
@@ -67,7 +71,7 @@ enum FallingObjects: CaseIterable {
     case Cheese
     case Obstacle
     
-    private static var storedSprites: [Self : UIImage] = [:]
+    private static var storedSprites: [Self : SKTexture] = [:]
     
     var fallsFast: Bool {
         switch self {
@@ -78,29 +82,61 @@ enum FallingObjects: CaseIterable {
         }
     }
     
-    func sprite() -> UIImage {
+    func sprite(ofSize size: CGSize) -> SKTexture {
         switch self {
         case .Cheese:
-            let img: UIImage
+            var texture: SKTexture
             
-            if let foo = Self.storedSprites[self] {
-                img = foo
+            if let storedTexture = Self.storedSprites[self] {
+                texture = storedTexture
             } else {
-                img = UIImage(named: "building0") ?? UIImage()
-                _ = Self.storedSprites.updateValue(img, forKey: self)
+                let img = (UIImage(named: "building0") ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
+                texture = SKTexture(image: img)
+                _ = Self.storedSprites.updateValue(texture, forKey: self)
             }
-            return img
-        
+            return texture
+            
         case .Obstacle:
-            let img: UIImage
+            var texture: SKTexture
             
-            if let foo = Self.storedSprites[self] {
-                img = foo
+            if let storedTexture = Self.storedSprites[self] {
+                texture = storedTexture
             } else {
-                img = UIImage(named: "building0") ?? UIImage()
-                _ = Self.storedSprites.updateValue(img, forKey: self)
+                let img = (UIImage(named: "building0") ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
+                texture = SKTexture(image: img)
+                _ = Self.storedSprites.updateValue(texture, forKey: self)
             }
-            return img
+            return texture
         }
+    }
+}
+
+extension UIImage {
+    func scalePreservingAspectRatio(targetSize: CGSize) -> UIImage {
+        // Determine the scale factor that preserves aspect ratio
+        let widthRatio = targetSize.width / size.width
+        let heightRatio = targetSize.height / size.height
+        
+        let scaleFactor = min(widthRatio, heightRatio)
+        
+        // Compute the new image size that preserves aspect ratio
+        let scaledImageSize = CGSize(
+            width: size.width * scaleFactor,
+            height: size.height * scaleFactor
+        )
+
+        // Draw and return the resized UIImage
+        let renderer = UIGraphicsImageRenderer(
+            size: scaledImageSize
+        )
+
+        let scaledImage = renderer.image { _ in
+            self.draw(in: CGRect(
+                origin: .zero,
+                size: scaledImageSize
+            ))
+        }
+        
+        return scaledImage
     }
 }
