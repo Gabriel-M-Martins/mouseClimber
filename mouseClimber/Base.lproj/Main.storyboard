@@ -32,6 +32,9 @@
                                         <rect key="frame" x="0.0" y="51.333333333333371" width="121" height="34.333333333333343"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Leaderboard"/>
+                                        <connections>
+                                            <action selector="openLeaderboard:" destination="8ft-Md-gSf" eventType="touchUpInside" id="gCH-Ev-Ppu"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                             </stackView>

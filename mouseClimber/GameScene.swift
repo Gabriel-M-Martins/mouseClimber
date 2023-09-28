@@ -35,13 +35,14 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     var audioJump2: AVAudioPlayer?
     var audioEatCheese: AVAudioPlayer?
     
-    private var isJumping = false
-    
     private var buildings: [SKNode] = []
     
     private var fallingObjects: [(case: FallingObjects, node: SKNode)] = []
     
     private var mouse = SKSpriteNode()
+    private var mouseBody = SKPhysicsBody()
+    
+    private var background = SKSpriteNode()
     
     private var lastUpdateTime: Double = 0
     
@@ -55,19 +56,22 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         setupBuildings(view)
         setupFallingObjects()
         
-        mouse = SKSpriteNode(color: .red, size: CGSize(width: 40, height: 40))
-        mouse.anchorPoint = CGPoint(x: 0, y: 0)
-        mouse.position = CGPoint(x: buildings[0].children[0].frame.width, y: view.frame.height / 3)
+        setupTapGestureRecognizer()
+        
+        mouse = SKSpriteNode(color: .clear, size: CGSize(width: view.frame.width / 9, height: view.frame.width * 0.23))
+        mouse.anchorPoint = CGPoint(x: 0.5, y: 0)
+        mouse.position = CGPoint(x: buildings[0].children[0].frame.width + 20, y: view.frame.height / 3)
         mouse.zPosition = 1
         mouse.name = "mouse"
+        mouse.texture = SKTexture(imageNamed: "mouse1")
         
-        let mouseBody = SKPhysicsBody(rectangleOf: mouse.size)
-        mouseBody.categoryBitMask = 1
-        mouseBody.contactTestBitMask = 2
-        mouseBody.collisionBitMask = 16
-        mouseBody.affectedByGravity = false
-        mouseBody.allowsRotation = false
-        mouse.physicsBody = mouseBody
+        getWalkingMouseBody(size: mouse.size)
+        
+        background = SKSpriteNode(imageNamed: "background")
+        background.anchorPoint = CGPoint(x: 0, y: 0)
+        background.position = CGPoint(x: 0, y: 0)
+        background.zPosition = -15
+        addChild(background)
         
         let minYConstraint = SKConstraint.positionY(SKRange(upperLimit: view.frame.height - 50))
         mouse.constraints = [minYConstraint]
@@ -75,6 +79,8 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         addChild(mouse)
         
         mouse.run(.repeatForever(.move(by: CGVector(dx: 0, dy: (rollingSpeed * -1)/2 ), duration: rollingDuration)))
+        
+        self.walk()
         
         setSounds()
     }
@@ -90,6 +96,89 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
             audioPlayer?.play()
             checkGameOver(mouse)
         }
+    }
+    
+    // MARK: - Mouse Physics Body Config
+    private func getWalkingMouseBody(size: CGSize) {
+        mouseBody = SKPhysicsBody(rectangleOf: CGSize(width: size.width * 0.6, height: size.height), center: CGPoint(x: 0, y: size.height / 2))
+        mouseBody.categoryBitMask = 1
+        mouseBody.contactTestBitMask = 2
+        mouseBody.collisionBitMask = 16
+        mouseBody.affectedByGravity = false
+        mouseBody.allowsRotation = false
+        mouse.physicsBody = mouseBody
+    }
+    
+    private func getJumpingMouseBody(size: CGSize) {
+        mouseBody = SKPhysicsBody(rectangleOf: CGSize(width: size.width * 0.7, height: size.height * 0.8), center: CGPoint(x: 0, y: size.height / 2))
+        mouseBody.categoryBitMask = 1
+        mouseBody.contactTestBitMask = 2
+        mouseBody.collisionBitMask = 16
+        mouseBody.affectedByGravity = false
+        mouseBody.allowsRotation = false
+        mouse.physicsBody = mouseBody
+    }
+    
+    // MARK: - Animations
+    private func setJumpAnimation() -> [SKTexture] {
+        var textures: [SKTexture] = []
+        for i in 0...1 {
+            let texture = SKTexture(imageNamed: "mouse\(i)")
+            textures.append(texture)
+        }
+        textures.append(SKTexture(imageNamed: "mouse1"))
+        return textures
+    }
+    
+    private func setWalkAnimation() -> [SKTexture] {
+        var textures: [SKTexture] = []
+        for i in 1...2 {
+            let texture = SKTexture(imageNamed: "mouse\(i)")
+            textures.append(texture)
+        }
+        return textures
+    }
+    
+    // MARK: - Actions
+    private func jump(to side: Side) {
+        guard let view = self.view else { return }
+        
+        let width = view.frame.width / 9
+        let height = width * 2.13
+        
+        if side == .right {
+            mouse.run(.move(to: CGPoint(x: view.frame.maxX - buildings[0].children[0].frame.width - 20, y: mouse.position.y + 100), duration: 0.2))
+            
+            mouse.run(.animate(with: setJumpAnimation(), timePerFrame: 0.2))
+            
+            mouse.size = CGSize(width: height, height: width)
+            
+            getJumpingMouseBody(size: mouse.size)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.19) {
+                self.mouse.size = CGSize(width: width, height: height)
+                self.getWalkingMouseBody(size: self.mouse.size)
+                self.walk()
+            }
+        } else {
+            mouse.run(.move(to: CGPoint(x: buildings[0].children[0].frame.width + 20, y: mouse.position.y + 100), duration: 0.2))
+            
+            mouse.run(.animate(with: setJumpAnimation(), timePerFrame: 0.2))
+            
+            mouse.size = CGSize(width: height, height: width)
+            
+            getJumpingMouseBody(size: mouse.size)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.19) {
+                self.mouse.size = CGSize(width: width, height: height)
+                self.getWalkingMouseBody(size: self.mouse.size)
+                self.walk()
+            }
+        }
+    }
+    
+    private func walk() {
+        mouse.run(.repeatForever(.animate(with: setWalkAnimation(), timePerFrame: 0.1)))
     }
     
     // MARK: - Sounds
@@ -139,7 +228,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         
         guard let scene = self.scene else { return }
         scene.removeAllActions()
-        
+        mouse.removeFromParent()
         audioPlayer?.pause()
         audioGameOver?.play()
     }
@@ -148,6 +237,38 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         guard let view = self.view else { return }
         let mainScene = GameScene(size: view.frame.size)
         view.presentScene(mainScene)
+    }
+    
+    // MARK: - Tap
+    private func setupTapGestureRecognizer() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        
+        tapGesture.numberOfTapsRequired = 1
+        tapGesture.numberOfTouchesRequired = 1
+        
+        self.view?.addGestureRecognizer(tapGesture)
+    }
+        
+    @objc func handleTap(_ sender: UITapGestureRecognizer) {
+        if !isGameOver {
+            if sender.state == .recognized {
+                if self.currentSide == .left {
+                    mouse.xScale = -1
+                    
+                    jump(to: .right)
+                    self.currentSide = .right
+                    
+                    audioJump1?.play()
+                } else {
+                    mouse.xScale = 1
+                    
+                    jump(to: .left)
+                    self.currentSide = .left
+                    
+                    audioJump2?.play()
+                }
+            }
+        }
     }
     
     // MARK: - Mouth Movement
@@ -167,18 +288,22 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         if !isGameOver {
             guard let mouthRight = blendShapes[.mouthLeft] as? CGFloat, let mouthLeft = blendShapes[.mouthRight] as? CGFloat else { return }
 
-            guard let view = self.view else { return }
-            
-            if mouthLeft > mouthRight {
-                if mouthLeft > 0.5 && self.currentSide == .right {
-                    self.currentSide = .left
-                    mouse.run(.move(to: CGPoint(x: buildings[0].children[0].frame.width, y: mouse.position.y + 100), duration: 0.1))
+            if mouthRight > mouthLeft {
+                if mouthRight > 0.5 && self.currentSide == .left {
+                    mouse.xScale = -1
+                    
+                    jump(to: .right)
+                    self.currentSide = .right
+                    
                     audioJump1?.play()
                 }
             } else {
-                if mouthRight > 0.5 && self.currentSide == .left {
-                    self.currentSide = .right
-                    mouse.run(.move(to: CGPoint(x: view.frame.width - buildings[0].children[0].frame.width - mouse.frame.width, y: mouse.position.y + 100), duration: 0.1))
+                if mouthLeft > 0.5 && self.currentSide == .right {
+                    mouse.xScale = 1
+                    
+                    jump(to: .left)
+                    self.currentSide = .left
+                    
                     audioJump2?.play()
                 }
             }
@@ -215,7 +340,8 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         
         let fallingObject = FallingObjects.allCases.randomElement()!
         
-        let size = CGSize(width: (usableWidth.end - usableWidth.start) / 4, height: (usableWidth.end - usableWidth.start) / 4)
+        let proportion = fallingObject.proportion
+        let size = CGSize(width: (usableWidth.end - usableWidth.start) / proportion, height: (usableWidth.end - usableWidth.start) / proportion)
         let fallingObjectSprite = fallingObject.texture(ofSize: size)
         
         let fallingObjectNode = SKSpriteNode(texture: fallingObjectSprite)
@@ -228,7 +354,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
             .move(by: CGVector(dx: 0, dy: rollingSpeed * -1 * (fallingObject.fallsFast ? 1.5 : 1) ), duration: rollingDuration)
         ))
         
-        let fallingObjectBody = SKPhysicsBody(rectangleOf: fallingObjectNode.size)
+        let fallingObjectBody = SKPhysicsBody(rectangleOf: fallingObjectNode.size, center: CGPoint(x: fallingObjectNode.frame.width / 2, y: fallingObjectNode.frame.height / 2))
         fallingObjectBody.affectedByGravity = false
         fallingObjectBody.allowsRotation = false
         
