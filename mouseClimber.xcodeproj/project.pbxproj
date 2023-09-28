@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		54E6ABCE2AC3E7C600D73667 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */; };
+		54E6ABD02AC3EEC200D73667 /* LeaderboardScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */; };
 		68A9BD502AC4AB1600834141 /* SKButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */; };
 		73CADC942AC5514B009AFF0F /* eatCheese.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73CADC932AC5514B009AFF0F /* eatCheese.wav */; };
 		73CADC962AC5543A009AFF0F /* jump.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73CADC952AC5543A009AFF0F /* jump.wav */; };
@@ -26,6 +28,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		54E6ABC82AC3721E00D73667 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
+		54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardScene.swift; sourceTree = "<group>"; };
 		68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKButtonNode.swift; sourceTree = "<group>"; };
 		73CADC932AC5514B009AFF0F /* eatCheese.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = eatCheese.wav; sourceTree = "<group>"; };
 		73CADC952AC5543A009AFF0F /* jump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = jump.wav; sourceTree = "<group>"; };
@@ -95,17 +100,21 @@
 		A79AB2DB2AC207770008243F /* mouseClimber */ = {
 			isa = PBXGroup;
 			children = (
-				A71C6C7A2AC5DF2400140EA9 /* Helper */,
 				73D743072AC4F7620054DBB8 /* Sounds */,
+				54E6ABC82AC3721E00D73667 /* Info.plist */,
+				A71C6C7A2AC5DF2400140EA9 /* Helper */,
 				A71C6C792AC5DA8800140EA9 /* mouseClimber.entitlements */,
 				A79AB2DC2AC207770008243F /* AppDelegate.swift */,
 				A79AB2E42AC207770008243F /* GameViewController.swift */,
 				A79AB2E22AC207770008243F /* GameScene.swift */,
+				54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */,
 				A73C1BBD2AC4A9A90015E21A /* Sprites.swift */,
 				68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */,
+				A79AB2E42AC207770008243F /* GameViewController.swift */,
+				54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */,
 				A79AB2E62AC207770008243F /* Main.storyboard */,
-				A79AB2E92AC207780008243F /* Assets.xcassets */,
 				A79AB2EB2AC207780008243F /* LaunchScreen.storyboard */,
+				A79AB2E92AC207780008243F /* Assets.xcassets */,
 				A71C6C7D2AC5E4B100140EA9 /* MainMenuViewController.swift */,
 				A71C6C7F2AC6002600140EA9 /* Settings.swift */,
 				A7FE93422AC62E150076B277 /* LeaderboardViewController.swift */,
@@ -197,6 +206,8 @@
 				A71C6C7E2AC5E4B100140EA9 /* MainMenuViewController.swift in Sources */,
 				A71C6C7C2AC5DF2400140EA9 /* GameKitHelper.swift in Sources */,
 				A79AB2DD2AC207770008243F /* AppDelegate.swift in Sources */,
+				54E6ABD02AC3EEC200D73667 /* LeaderboardScene.swift in Sources */,
+				54E6ABCE2AC3E7C600D73667 /* MainMenu.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,7 +365,8 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 73DNAYF2TM;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_FILE = mouseClimber/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Imite um rato farejando seu delicioso queijo!";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -389,7 +401,8 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 73DNAYF2TM;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_FILE = mouseClimber/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Imite um rato farejando seu delicioso queijo!";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

@@ -11,7 +11,7 @@ import ARKit
 import AVFoundation
 
 enum Side {
-    case right, left
+	case right, left
 }
 
 class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
@@ -45,6 +45,8 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     private var background = SKSpriteNode()
     
     private var lastUpdateTime: Double = 0
+
+    private let aceleration: CGFloat = 1/2500
     
     // MARK: -
     override func didMove(to view: SKView) {
@@ -96,6 +98,8 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
             audioPlayer?.play()
             checkGameOver(mouse)
         }
+
+        rollingSpeed += aceleration
     }
     
     // MARK: - Mouse Physics Body Config
@@ -224,6 +228,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     
     private func performGameOver() {
         self.isGameOver = true
+        
         gameDelegate?.gameOver()
         
         guard let scene = self.scene else { return }
@@ -351,7 +356,9 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         fallingObjectNode.name = "fallingObject"
         
         fallingObjectNode.run(.repeatForever(
-            .move(by: CGVector(dx: 0, dy: rollingSpeed * -1 * (fallingObject.fallsFast ? 1.5 : 1) ), duration: rollingDuration)
+            .customAction(withDuration: rollingDuration, actionBlock: { [weak self] node, _ in
+                node.position = CGPoint(x: node.position.x, y: node.position.y - ((self?.rollingSpeed ?? 0) * (fallingObject.fallsFast ? 1.5 : 1)))
+            })
         ))
         
         let fallingObjectBody = SKPhysicsBody(rectangleOf: fallingObjectNode.size, center: CGPoint(x: fallingObjectNode.frame.width / 2, y: fallingObjectNode.frame.height / 2))
@@ -418,7 +425,8 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         
         if buildings.count < 2 {
             if maxY <= view.frame.maxY + 150 {
-                let nextBuildingsYPosition = buildings.last!.position.y + buildings.last!.children[0].frame.maxY - (delta * rollingSpeed / rollingDuration)
+                let t = 4.0
+				let nextBuildingsYPosition = buildings.last!.position.y + buildings.last!.children[0].frame.maxY - ((0.5 * aceleration * (t * t)) + (rollingSpeed * t))
                 
                 let newBuildings = spawnBuildingsParent(view, starterPosition: CGPoint(x: 0, y: nextBuildingsYPosition))
                 
@@ -430,9 +438,12 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     private func setupBuildings(_ view: SKView) {
         buildings.append(spawnBuildingsParent(view))
         
-        let bufferPosition = CGPoint(x: 0, y: buildings[0].position.y + buildings[0].children[0].frame.maxY)
-        let bufferBuildings = spawnBuildingsParent(view, starterPosition: bufferPosition)
-        buildings.append(bufferBuildings)
+        let t = rollingDuration
+		let nextBuildingsYPosition = buildings.last!.position.y + buildings.last!.children[0].frame.maxY - ((0.5 * aceleration * (t * t)) + (rollingSpeed * t))
+		
+		let bufferPosition = CGPoint(x: 0, y: nextBuildingsYPosition)
+		let bufferBuildings = spawnBuildingsParent(view, starterPosition: bufferPosition)
+		buildings.append(bufferBuildings)
     }
     
     private func spawnBuildingsParent(_ view: SKView, starterPosition: CGPoint = .zero) -> SKNode {
@@ -444,7 +455,9 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         self.addChild(parent)
         
         parent.run(.repeatForever(
-            .move(by: CGVector(dx: 0, dy: rollingSpeed * -1), duration: rollingDuration)
+            .customAction(withDuration: rollingDuration, actionBlock: { [weak self] node, elapsedTime in
+				node.position = CGPoint(x: node.position.x, y: node.position.y - (self?.rollingSpeed ?? 0))
+			})
         ))
         
         return parent
