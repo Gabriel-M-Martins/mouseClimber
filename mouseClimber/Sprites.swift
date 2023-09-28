@@ -24,6 +24,7 @@ enum ObstacleTiles: String, CaseIterable, Storable {
     case Cat = "cat"
     
     internal static var store: [Self : SKTexture] = [:]
+    
 }
 
 enum FallingObjects: String, CaseIterable, Storable {
@@ -38,6 +39,15 @@ enum FallingObjects: String, CaseIterable, Storable {
             return false
         case .Obstacle:
             return true
+        }
+    }
+    
+    var proportion: CGFloat {
+        switch self {
+            case .Cheese:
+                return 2
+            case .Obstacle:
+                return 3
         }
     }
 }
@@ -56,7 +66,7 @@ extension Storable where StoredType == SKTexture {
         if let storedTexture = Self.store[self] {
             texture = storedTexture
         } else {
-            let img = (UIImage(named: "building0"/*self.rawValue*/) ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
+            let img = (UIImage(named: self.rawValue) ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
             texture = SKTexture(image: img)
             _ = Self.store.updateValue(texture, forKey: self)
         }
