@@ -85,7 +85,6 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         
         updateBuildingsBuffer(delta)
         removeFallingObjectNodes()
-//        updateFallingObjects()
         
         if !isGameOver {
             audioPlayer?.play()
@@ -240,7 +239,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         let fallingObject = FallingObjects.allCases.randomElement()!
         
         let size = CGSize(width: (usableWidth.end - usableWidth.start) / 4, height: (usableWidth.end - usableWidth.start) / 4)
-        let fallingObjectSprite = fallingObject.sprite(ofSize: size)
+        let fallingObjectSprite = fallingObject.texture(ofSize: size)
         
         let fallingObjectNode = SKSpriteNode(texture: fallingObjectSprite)
         
@@ -374,17 +373,17 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
             
             if obstaclesCreated < obstacleFrequency && Bool.random() {
                 if Bool.random() {
-                    rndTileSprite1 = ObstacleTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
-                    rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
+                    rndTileSprite1 = ObstacleTiles.allCases.randomElement()!.texture(ofSize: tileSize)
+                    rndTileSprite2 = BuildingTiles.allCases.randomElement()!.texture(ofSize: tileSize)
                 } else {
-                    rndTileSprite1 = BuildingTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
-                    rndTileSprite2 = ObstacleTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
+                    rndTileSprite1 = BuildingTiles.allCases.randomElement()!.texture(ofSize: tileSize)
+                    rndTileSprite2 = ObstacleTiles.allCases.randomElement()!.texture(ofSize: tileSize)
                 }
                 
                 obstaclesCreated += 1
             } else {
-                rndTileSprite1 = BuildingTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
-                rndTileSprite2 = BuildingTiles.allCases.randomElement()!.sprite(ofSize: tileSize)
+                rndTileSprite1 = BuildingTiles.allCases.randomElement()!.texture(ofSize: tileSize)
+                rndTileSprite2 = BuildingTiles.allCases.randomElement()!.texture(ofSize: tileSize)
             }
             
             let tile1 = SKSpriteNode(texture: rndTileSprite1)

@@ -10,68 +10,27 @@ import UIKit
 import SpriteKit
 
 // TODO: storedSprites guardar uma lista de UIImage inves de só uma p poder criar animação e tal.
-enum BuildingTiles: CaseIterable {
-    case Building1
-    case Building2
+//typealias StorableTexture = RawRepresentable & CaseIterable & Storable
+
+// MARK: - Sprites
+enum BuildingTiles: String, CaseIterable, Storable {
+    case Building1 = "building0"
+    case Building2 = "building1"
     
-    private static var storedSprites: [Self : SKTexture] = [:]
-    
-    func sprite(ofSize size: CGSize) -> SKTexture {
-        switch self {
-        case .Building1:
-            var texture: SKTexture
-            
-            if let storedTexture = Self.storedSprites[self] {
-                texture = storedTexture
-            } else {
-                let img = (UIImage(named: "building0") ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
-                texture = SKTexture(image: img)
-                _ = Self.storedSprites.updateValue(texture, forKey: self)
-            }
-            return texture
-            
-        case .Building2:
-            var texture: SKTexture
-            
-            if let storedTexture = Self.storedSprites[self] {
-                texture = storedTexture
-            } else {
-                let img = (UIImage(named: "building0") ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
-                texture = SKTexture(image: img)
-                _ = Self.storedSprites.updateValue(texture, forKey: self)
-            }
-            return texture
-        }
-    }
+    internal static var store: [BuildingTiles : SKTexture] = [:]
 }
 
-enum ObstacleTiles: CaseIterable {
-    case Cat
+enum ObstacleTiles: String, CaseIterable, Storable {
+    case Cat = "cat"
     
-    private static var storedSprites: [Self : SKTexture] = [:]
-    
-    func sprite(ofSize size: CGSize) -> SKTexture {
-        switch self {
-        case .Cat:
-            var texture: SKTexture
-            
-            if let storedTexture = Self.storedSprites[self] {
-                texture = storedTexture
-            } else {
-                let img = (UIImage(named: "building0") ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
-                texture = SKTexture(image: img)
-                _ = Self.storedSprites.updateValue(texture, forKey: self)
-            }
-            return texture
-        }
-    }
+    internal static var store: [Self : SKTexture] = [:]
 }
 
-enum FallingObjects: CaseIterable {
-    case Cheese
-    case Obstacle
+enum FallingObjects: String, CaseIterable, Storable {
+    case Cheese = "cheese"
+    case Obstacle = "obstacle"
     
-    private static var storedSprites: [Self : SKTexture] = [:]
+    internal static var store: [Self : SKTexture] = [:]
     
     var fallsFast: Bool {
         switch self {
@@ -81,36 +40,32 @@ enum FallingObjects: CaseIterable {
             return true
         }
     }
+}
+
+// MARK: - Storable
+protocol Storable where Self: RawRepresentable & Hashable, Self.RawValue == String {
+    associatedtype StoredType
     
-    func sprite(ofSize size: CGSize) -> SKTexture {
-        switch self {
-        case .Cheese:
-            var texture: SKTexture
-            
-            if let storedTexture = Self.storedSprites[self] {
-                texture = storedTexture
-            } else {
-                let img = (UIImage(named: "building0") ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
-                texture = SKTexture(image: img)
-                _ = Self.storedSprites.updateValue(texture, forKey: self)
-            }
-            return texture
-            
-        case .Obstacle:
-            var texture: SKTexture
-            
-            if let storedTexture = Self.storedSprites[self] {
-                texture = storedTexture
-            } else {
-                let img = (UIImage(named: "building0") ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
-                texture = SKTexture(image: img)
-                _ = Self.storedSprites.updateValue(texture, forKey: self)
-            }
-            return texture
+    static var store: [Self : StoredType] { get set }
+}
+
+extension Storable where StoredType == SKTexture {
+    func texture(ofSize size: CGSize) -> SKTexture {
+        var texture: SKTexture
+        
+        if let storedTexture = Self.store[self] {
+            texture = storedTexture
+        } else {
+            let img = (UIImage(named: "building0"/*self.rawValue*/) ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
+            texture = SKTexture(image: img)
+            _ = Self.store.updateValue(texture, forKey: self)
         }
+        
+        return texture
     }
 }
 
+// MARK: - UIImage Extension
 extension UIImage {
     func scalePreservingAspectRatio(targetSize: CGSize) -> UIImage {
         // Determine the scale factor that preserves aspect ratio

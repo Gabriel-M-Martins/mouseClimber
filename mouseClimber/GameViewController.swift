@@ -14,6 +14,8 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         if let view = self.view as! SKView? {
             let scene = GameScene(size: view.frame.size)
             scene.anchorPoint = CGPoint(x: 0, y: 0)
