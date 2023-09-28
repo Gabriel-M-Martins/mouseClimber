@@ -227,6 +227,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         createGameOverLabels()
         guard let scene = self.scene else { return }
         scene.removeAllActions()
+        mouse.removeFromParent()
         audioPlayer?.pause()
         audioGameOver?.play()
     }
