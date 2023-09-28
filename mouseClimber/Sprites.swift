@@ -56,7 +56,7 @@ extension Storable where StoredType == SKTexture {
         if let storedTexture = Self.store[self] {
             texture = storedTexture
         } else {
-            let img = (UIImage(named: "building0"/*self.rawValue*/) ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
+            let img = (UIImage(named: self.rawValue) ?? UIImage()).scalePreservingAspectRatio(targetSize: size)
             texture = SKTexture(image: img)
             _ = Self.store.updateValue(texture, forKey: self)
         }
