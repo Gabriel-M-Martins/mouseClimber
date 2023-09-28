@@ -15,6 +15,8 @@ enum Side {
 }
 
 class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
+    var gameDelegate: GameDelegate?
+    
     let arSession = ARSession()
     let faceTrackingConfiguration = ARFaceTrackingConfiguration()
     
@@ -42,8 +44,6 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     private var mouse = SKSpriteNode()
     
     private var lastUpdateTime: Double = 0
-    
-    private var cheeseCounter = 0
     
     // MARK: -
     override func didMove(to view: SKView) {
@@ -135,32 +135,13 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     
     private func performGameOver() {
         self.isGameOver = true
-        createGameOverLabels()
+        gameDelegate?.gameOver()
+        
         guard let scene = self.scene else { return }
         scene.removeAllActions()
+        
         audioPlayer?.pause()
         audioGameOver?.play()
-    }
-    
-    private func createGameOverLabels() {
-        guard let view = self.view else { return }
-        
-        let gameOverLabel = SKLabelNode(text: "Game Over")
-        gameOverLabel.position = CGPoint(x: view.frame.midX, y: view.frame.midY)
-                addChild(gameOverLabel)
-        gameOverLabel.zPosition = 2
-                
-        let restartButton = SKLabelNode(text: "Restart")
-        restartButton.position = CGPoint(x: view.frame.midX, y: gameOverLabel.frame.minY - 50)
-        restartButton.zPosition = 2
-        restartButton.name = "restartButton"
-        addChild(restartButton)
-        
-        let pontuationLabel = SKLabelNode(text: "Cheeses eaten: \(cheeseCounter)")
-        pontuationLabel.position = CGPoint(x: view.frame.midX, y: restartButton.frame.minY - 50)
-        pontuationLabel.zPosition = 2
-        addChild(pontuationLabel)
-        
     }
     
     private func restartGame() {
@@ -209,13 +190,9 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         guard let view = self.view else { return }
         
         if fallingObjects.count > 0 {
-            for fallingObject in fallingObjects {
-                if fallingObject.node.frame.minY <= view.frame.minY {
-                    if let index = fallingObjects.firstIndex(where: { $0.node == fallingObject.node }) {
-                        fallingObject.node.removeFromParent()
-                        fallingObjects.remove(at: index)
-                    }
-                }
+            if fallingObjects[0].node.frame.minY <= view.frame.minY {
+                fallingObjects[0].node.removeFromParent()
+                fallingObjects.remove(at: 0)
             }
         }
     }
@@ -277,6 +254,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         // Obstacle contact
         if (bodyA.categoryBitMask == 1 && bodyB.categoryBitMask == 4) || (bodyA.categoryBitMask == 4 && bodyB.categoryBitMask == 1) {
             performGameOver()
+            return
         }
         
         // Cheese contact
@@ -291,11 +269,11 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
             
             body.node?.removeFromParent()
             
-            if let index = fallingObjects.firstIndex(where: { $0.node == body.node }) {
+            if let index = fallingObjects.firstIndex(where: { $0.node === body.node }) {
                 fallingObjects.remove(at: index)
             }
             
-            self.cheeseCounter += 1
+            gameDelegate?.increaseCheeseCount()
             if !isGameOver {
                 audioEatCheese?.play()
             }
@@ -401,17 +379,5 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         
         parent.addChild(building1)
         parent.addChild(building2)
-    }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            let location = touch.location(in: self)
-            if let node = atPoint(location) as? SKLabelNode {
-                if node.name == "restartButton" {
-                    // Transition back to the main game scene to restart the game
-                    restartGame()
-                }
-            }
-        }
     }
 }

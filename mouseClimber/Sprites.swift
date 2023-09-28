@@ -24,6 +24,7 @@ enum ObstacleTiles: String, CaseIterable, Storable {
     case Cat = "cat"
     
     internal static var store: [Self : SKTexture] = [:]
+    
 }
 
 enum FallingObjects: String, CaseIterable, Storable {

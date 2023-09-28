@@ -9,23 +9,22 @@ import UIKit
 import SpriteKit
 import GameplayKit
 
-class GameViewController: UIViewController {
-
+class GameViewController: UIViewController, GameDelegate {
+    @IBOutlet weak var gameOverView: UIStackView!
+    
+    @IBOutlet weak var cheesesEaten: UILabel!
+    @IBOutlet weak var cheeseRecordLabel: UILabel!
+    
+    private var cheeseCount: Int = 0
+    
     override func viewDidLoad() {
+        self.navigationController?.navigationBar.isHidden = true
+
+        gameOverView.isHidden = true
+        
         super.viewDidLoad()
-        
-        
-        
-        if let view = self.view as! SKView? {
-            let scene = GameScene(size: view.frame.size)
-            scene.anchorPoint = CGPoint(x: 0, y: 0)
-            scene.scaleMode = .aspectFill
-            view.presentScene(scene)
-            view.ignoresSiblingOrder = true
-            
-            view.showsFPS = true
-            view.showsNodeCount = true
-        }
+
+        presentGame()
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -39,4 +38,46 @@ class GameViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
+    
+    @IBAction func backToMainMenu(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @IBAction func restartGame(_ sender: Any) {
+        cheeseCount = 0
+        cheesesEaten.text = String(cheeseCount)
+        presentGame()
+    }
+    
+    private func presentGame() {
+        gameOverView.isHidden = true
+        
+        if let view = self.view as! SKView? {
+            let scene = GameScene(size: view.frame.size)
+            scene.anchorPoint = CGPoint(x: 0, y: 0)
+            scene.scaleMode = .aspectFill
+            scene.gameDelegate = self
+            view.presentScene(scene)
+            view.ignoresSiblingOrder = true
+            
+            view.showsFPS = true
+            view.showsNodeCount = true
+        }
+    }
+    
+    func gameOver() {
+        gameOverView.isHidden = false
+        cheeseRecordLabel.text = String(cheeseCount)
+        GameKitHelper.shared.submitScore(points: cheeseCount)
+    }
+    
+    func increaseCheeseCount() {
+        cheeseCount += 1
+        cheesesEaten.text = String(cheeseCount)
+    }
+}
+
+protocol GameDelegate {
+    func gameOver()
+    func increaseCheeseCount()
 }
