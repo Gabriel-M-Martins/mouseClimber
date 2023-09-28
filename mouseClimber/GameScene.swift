@@ -210,9 +210,13 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         guard let view = self.view else { return }
         
         if fallingObjects.count > 0 {
-            if fallingObjects[0].node.frame.minY <= view.frame.minY {
-                fallingObjects[0].node.removeFromParent()
-                fallingObjects.remove(at: 0)
+            for fallingObject in fallingObjects {
+                if fallingObject.node.frame.minY <= view.frame.minY {
+                    if let index = fallingObjects.firstIndex(where: { $0.node == fallingObject.node }) {
+                        fallingObject.node.removeFromParent()
+                        fallingObjects.remove(at: index)
+                    }
+                }
             }
         }
     }
