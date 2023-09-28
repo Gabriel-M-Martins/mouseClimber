@@ -9,9 +9,13 @@
 /* Begin PBXBuildFile section */
 		54E6ABCE2AC3E7C600D73667 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */; };
 		54E6ABD02AC3EEC200D73667 /* LeaderboardScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */; };
+		68A9BD502AC4AB1600834141 /* SKButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */; };
+		73CADC942AC5514B009AFF0F /* eatCheese.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73CADC932AC5514B009AFF0F /* eatCheese.wav */; };
+		73CADC962AC5543A009AFF0F /* jump.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73CADC952AC5543A009AFF0F /* jump.wav */; };
+		73CADC982AC55532009AFF0F /* backgroundMusic.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73CADC972AC55532009AFF0F /* backgroundMusic.wav */; };
+		73CADC9A2AC557A6009AFF0F /* gameOver.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73CADC992AC557A6009AFF0F /* gameOver.wav */; };
+		A73C1BBE2AC4A9A90015E21A /* Sprites.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73C1BBD2AC4A9A90015E21A /* Sprites.swift */; };
 		A79AB2DD2AC207770008243F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79AB2DC2AC207770008243F /* AppDelegate.swift */; };
-		A79AB2DF2AC207770008243F /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = A79AB2DE2AC207770008243F /* GameScene.sks */; };
-		A79AB2E12AC207770008243F /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = A79AB2E02AC207770008243F /* Actions.sks */; };
 		A79AB2E32AC207770008243F /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79AB2E22AC207770008243F /* GameScene.swift */; };
 		A79AB2E52AC207770008243F /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79AB2E42AC207770008243F /* GameViewController.swift */; };
 		A79AB2E82AC207770008243F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A79AB2E62AC207770008243F /* Main.storyboard */; };
@@ -20,14 +24,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		54E6ABC72AC371FB00D73667 /* mouseClimber.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = mouseClimber.entitlements; sourceTree = "<group>"; };
 		54E6ABC82AC3721E00D73667 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
 		54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardScene.swift; sourceTree = "<group>"; };
+		68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKButtonNode.swift; sourceTree = "<group>"; };
+		73CADC932AC5514B009AFF0F /* eatCheese.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = eatCheese.wav; sourceTree = "<group>"; };
+		73CADC952AC5543A009AFF0F /* jump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = jump.wav; sourceTree = "<group>"; };
+		73CADC972AC55532009AFF0F /* backgroundMusic.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = backgroundMusic.wav; sourceTree = "<group>"; };
+		73CADC992AC557A6009AFF0F /* gameOver.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gameOver.wav; sourceTree = "<group>"; };
+		A71C6C792AC5DA8800140EA9 /* mouseClimber.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = mouseClimber.entitlements; sourceTree = "<group>"; };
+		A73C1BBD2AC4A9A90015E21A /* Sprites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sprites.swift; sourceTree = "<group>"; };
 		A79AB2D92AC207770008243F /* mouseClimber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mouseClimber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A79AB2DC2AC207770008243F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A79AB2DE2AC207770008243F /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
-		A79AB2E02AC207770008243F /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		A79AB2E22AC207770008243F /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		A79AB2E42AC207770008243F /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		A79AB2E72AC207770008243F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -46,6 +54,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		73D743072AC4F7620054DBB8 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				73CADC972AC55532009AFF0F /* backgroundMusic.wav */,
+				73CADC992AC557A6009AFF0F /* gameOver.wav */,
+				73CADC952AC5543A009AFF0F /* jump.wav */,
+				73CADC932AC5514B009AFF0F /* eatCheese.wav */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
 		A79AB2D02AC207770008243F = {
 			isa = PBXGroup;
 			children = (
@@ -65,13 +84,14 @@
 		A79AB2DB2AC207770008243F /* mouseClimber */ = {
 			isa = PBXGroup;
 			children = (
+				73D743072AC4F7620054DBB8 /* Sounds */,
 				54E6ABC82AC3721E00D73667 /* Info.plist */,
-				54E6ABC72AC371FB00D73667 /* mouseClimber.entitlements */,
+				A71C6C792AC5DA8800140EA9 /* mouseClimber.entitlements */,
 				A79AB2DC2AC207770008243F /* AppDelegate.swift */,
-				A79AB2DE2AC207770008243F /* GameScene.sks */,
-				A79AB2E02AC207770008243F /* Actions.sks */,
 				A79AB2E22AC207770008243F /* GameScene.swift */,
 				54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */,
+				A73C1BBD2AC4A9A90015E21A /* Sprites.swift */,
+				68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */,
 				A79AB2E42AC207770008243F /* GameViewController.swift */,
 				54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */,
 				A79AB2E62AC207770008243F /* Main.storyboard */,
@@ -139,11 +159,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73CADC942AC5514B009AFF0F /* eatCheese.wav in Resources */,
+				73CADC9A2AC557A6009AFF0F /* gameOver.wav in Resources */,
 				A79AB2E82AC207770008243F /* Main.storyboard in Resources */,
-				A79AB2DF2AC207770008243F /* GameScene.sks in Resources */,
+				73CADC962AC5543A009AFF0F /* jump.wav in Resources */,
 				A79AB2EA2AC207780008243F /* Assets.xcassets in Resources */,
 				A79AB2ED2AC207780008243F /* LaunchScreen.storyboard in Resources */,
-				A79AB2E12AC207770008243F /* Actions.sks in Resources */,
+				73CADC982AC55532009AFF0F /* backgroundMusic.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +177,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A79AB2E32AC207770008243F /* GameScene.swift in Sources */,
+				68A9BD502AC4AB1600834141 /* SKButtonNode.swift in Sources */,
 				A79AB2E52AC207770008243F /* GameViewController.swift in Sources */,
+				A73C1BBE2AC4A9A90015E21A /* Sprites.swift in Sources */,
 				A79AB2DD2AC207770008243F /* AppDelegate.swift in Sources */,
 				54E6ABD02AC3EEC200D73667 /* LeaderboardScene.swift in Sources */,
 				54E6ABCE2AC3E7C600D73667 /* MainMenu.swift in Sources */,
@@ -309,9 +333,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = mouseClimber/mouseClimber.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = WGTR6BWWG8;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 73DNAYF2TM;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = mouseClimber/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Imite um rato farejando seu delicioso queijo!";
@@ -326,8 +352,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dev.mouseClimber;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gabrielmartins.mouseClimber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "MouseClimber Profile";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -340,9 +368,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = mouseClimber/mouseClimber.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = WGTR6BWWG8;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = mouseClimber/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Imite um rato farejando seu delicioso queijo!";
@@ -357,8 +385,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dev.mouseClimber;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gabrielmartins.mouseClimber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
