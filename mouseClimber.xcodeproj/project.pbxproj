@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		54E6ABCE2AC3E7C600D73667 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */; };
+		54E6ABD02AC3EEC200D73667 /* LeaderboardScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */; };
 		A79AB2DD2AC207770008243F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79AB2DC2AC207770008243F /* AppDelegate.swift */; };
 		A79AB2DF2AC207770008243F /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = A79AB2DE2AC207770008243F /* GameScene.sks */; };
 		A79AB2E12AC207770008243F /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = A79AB2E02AC207770008243F /* Actions.sks */; };
@@ -18,6 +20,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		54E6ABC72AC371FB00D73667 /* mouseClimber.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = mouseClimber.entitlements; sourceTree = "<group>"; };
+		54E6ABC82AC3721E00D73667 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
+		54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardScene.swift; sourceTree = "<group>"; };
 		A79AB2D92AC207770008243F /* mouseClimber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mouseClimber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A79AB2DC2AC207770008243F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A79AB2DE2AC207770008243F /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -59,14 +65,18 @@
 		A79AB2DB2AC207770008243F /* mouseClimber */ = {
 			isa = PBXGroup;
 			children = (
+				54E6ABC82AC3721E00D73667 /* Info.plist */,
+				54E6ABC72AC371FB00D73667 /* mouseClimber.entitlements */,
 				A79AB2DC2AC207770008243F /* AppDelegate.swift */,
 				A79AB2DE2AC207770008243F /* GameScene.sks */,
 				A79AB2E02AC207770008243F /* Actions.sks */,
 				A79AB2E22AC207770008243F /* GameScene.swift */,
+				54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */,
 				A79AB2E42AC207770008243F /* GameViewController.swift */,
+				54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */,
 				A79AB2E62AC207770008243F /* Main.storyboard */,
-				A79AB2E92AC207780008243F /* Assets.xcassets */,
 				A79AB2EB2AC207780008243F /* LaunchScreen.storyboard */,
+				A79AB2E92AC207780008243F /* Assets.xcassets */,
 			);
 			path = mouseClimber;
 			sourceTree = "<group>";
@@ -147,6 +157,8 @@
 				A79AB2E32AC207770008243F /* GameScene.swift in Sources */,
 				A79AB2E52AC207770008243F /* GameViewController.swift in Sources */,
 				A79AB2DD2AC207770008243F /* AppDelegate.swift in Sources */,
+				54E6ABD02AC3EEC200D73667 /* LeaderboardScene.swift in Sources */,
+				54E6ABCE2AC3E7C600D73667 /* MainMenu.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,10 +308,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = mouseClimber/mouseClimber.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 73DNAYF2TM;
+				DEVELOPMENT_TEAM = WGTR6BWWG8;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = mouseClimber/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Imite um rato farejando seu delicioso queijo!";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -324,10 +339,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = mouseClimber/mouseClimber.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 73DNAYF2TM;
+				DEVELOPMENT_TEAM = WGTR6BWWG8;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = mouseClimber/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Imite um rato farejando seu delicioso queijo!";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
