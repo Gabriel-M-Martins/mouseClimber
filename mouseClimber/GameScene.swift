@@ -14,7 +14,7 @@ enum Side {
     case right, left
 }
 
-class GameScene: SKScene, ARSessionDelegate {
+class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     let arSession = ARSession()
     let faceTrackingConfiguration = ARFaceTrackingConfiguration()
     
@@ -42,10 +42,14 @@ class GameScene: SKScene, ARSessionDelegate {
     
     private var lastUpdateTime: Double = 0
     
+    private var cheeseCounter = 0
+    
     // MARK: -
     override func didMove(to view: SKView) {
         arSession.run(faceTrackingConfiguration)
         arSession.delegate = self
+        
+        physicsWorld.contactDelegate = self
         
         setupBuildings(view)
         setupFallingObjects()
@@ -54,6 +58,15 @@ class GameScene: SKScene, ARSessionDelegate {
         mouse.anchorPoint = CGPoint(x: 0, y: 0)
         mouse.position = CGPoint(x: buildings[0].children[0].frame.width, y: view.frame.height / 3)
         mouse.zPosition = 1
+        mouse.name = "mouse"
+        
+        let mouseBody = SKPhysicsBody(rectangleOf: mouse.size)
+        mouseBody.categoryBitMask = 1
+        mouseBody.contactTestBitMask = 2
+        mouseBody.collisionBitMask = 16
+        mouseBody.affectedByGravity = false
+        mouseBody.allowsRotation = false
+        mouse.physicsBody = mouseBody
         
         let minYConstraint = SKConstraint.positionY(SKRange(upperLimit: view.frame.height - 50))
         mouse.constraints = [minYConstraint]
@@ -62,30 +75,7 @@ class GameScene: SKScene, ARSessionDelegate {
         
         mouse.run(.repeatForever(.move(by: CGVector(dx: 0, dy: (rollingSpeed * -1)/2 ), duration: rollingDuration)))
         
-        if let soundURL = Bundle.main.url(forResource: "backgroundMusic", withExtension: "wav") {
-            do {
-                audioPlayer = try? AVAudioPlayer(contentsOf: soundURL)
-            } catch {
-                print("Erro ao carregar soundURL")
-            }
-        }
-        
-        if let soundURL2 = Bundle.main.url(forResource: "gameOver", withExtension: "wav") {
-            do {
-                audioGameOver = try? AVAudioPlayer(contentsOf: soundURL2)
-            } catch {
-                print("Erro ao carregar soundURL2")
-            }
-        }
-        
-        if let soundURL3 = Bundle.main.url(forResource: "jump", withExtension: "wav") {
-            do {
-                audioJump1 = try? AVAudioPlayer(contentsOf: soundURL3)
-                audioJump2 = try? AVAudioPlayer(contentsOf: soundURL3)
-            } catch {
-                print("Erro ao carregar soundURL3")
-            }
-        }
+        getSounds()
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -101,15 +91,43 @@ class GameScene: SKScene, ARSessionDelegate {
         }
     }
     
+    private func getSounds() {
+        if let soundURL = Bundle.main.url(forResource: "backgroundMusic", withExtension: "wav") {
+            if let audio = try? AVAudioPlayer(contentsOf: soundURL) {
+                audioPlayer = audio
+            }
+        }
+        
+        if let soundURL2 = Bundle.main.url(forResource: "gameOver", withExtension: "wav") {
+            if let audio = try? AVAudioPlayer(contentsOf: soundURL2) {
+                audioGameOver = audio
+            }
+        }
+        
+        if let soundURL3 = Bundle.main.url(forResource: "jump", withExtension: "wav") {
+            if let audio = try? AVAudioPlayer(contentsOf: soundURL3) {
+                audioJump1 = audio
+            }
+            
+            if let audio = try? AVAudioPlayer(contentsOf: soundURL3) {
+                audioJump2 = audio
+            }
+        }
+    }
+    
     private func checkGameOver(_ sprite: SKSpriteNode) {
         if mouse.position.y < 0 - mouse.size.height {
-            self.isGameOver = true
-            createGameOverLabels()
-            guard let scene = self.scene else { return }
-            scene.removeAllActions()
-            audioPlayer?.pause()
-            audioGameOver?.play()
+            performGameOver()
         }
+    }
+    
+    private func performGameOver() {
+        self.isGameOver = true
+        createGameOverLabels()
+        guard let scene = self.scene else { return }
+        scene.removeAllActions()
+        audioPlayer?.pause()
+        audioGameOver?.play()
     }
     
     private func createGameOverLabels() {
@@ -120,9 +138,14 @@ class GameScene: SKScene, ARSessionDelegate {
                 addChild(gameOverLabel)
                 
         let restartButton = SKLabelNode(text: "Restart")
-        restartButton.position = CGPoint(x: view.frame.midX, y: self.size.height / 3)
+        restartButton.position = CGPoint(x: view.frame.midX, y: gameOverLabel.frame.minY - 50)
         restartButton.name = "restartButton"
         addChild(restartButton)
+        
+        let pontuationLabel = SKLabelNode(text: "Cheeses eaten: \(cheeseCounter)")
+        pontuationLabel.position = CGPoint(x: view.frame.midX, y: restartButton.frame.minY - 50)
+        addChild(pontuationLabel)
+        
     }
     
     private func restartGame() {
@@ -192,13 +215,44 @@ class GameScene: SKScene, ARSessionDelegate {
         
         fallingObjectNode.anchorPoint = .zero
         fallingObjectNode.position = CGPoint(x: .random(in: usableWidth.start...usableWidth.end-fallingObjectNode.size.width), y: yPosition)
+        fallingObjectNode.name = "fallingObject"
         
         fallingObjectNode.run(.repeatForever(
             .move(by: CGVector(dx: 0, dy: rollingSpeed * -1 * (fallingObject.fallsFast ? 1.5 : 1) ), duration: rollingDuration)
         ))
         
+        let fallingObjectBody = SKPhysicsBody(rectangleOf: fallingObjectNode.size)
+        fallingObjectBody.affectedByGravity = false
+        fallingObjectBody.allowsRotation = false
+        
+        if fallingObject == .Cheese {
+            fallingObjectBody.categoryBitMask = 2
+            fallingObjectBody.contactTestBitMask = 1
+        } else if fallingObject == .Obstacle {
+            fallingObjectBody.categoryBitMask = 4
+            fallingObjectBody.contactTestBitMask = 1
+        }
+        
+        fallingObjectBody.collisionBitMask = 8
+        fallingObjectNode.physicsBody = fallingObjectBody
+        
         fallingObjects.append((fallingObject, fallingObjectNode))
         self.addChild(fallingObjectNode)
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        let bodyA = contact.bodyA
+        let bodyB = contact.bodyB
+        
+        // Obstacle contact
+        if (bodyA.categoryBitMask == 1 && bodyB.categoryBitMask == 4) || (bodyA.categoryBitMask == 4 && bodyB.categoryBitMask == 1) {
+            performGameOver()
+        }
+        
+        // Cheese contact
+        if (bodyA.categoryBitMask == 1 && bodyB.categoryBitMask == 2) || (bodyA.categoryBitMask == 2 && bodyB.categoryBitMask == 1) {
+            self.cheeseCounter += 1
+        }
     }
     
     // MARK: - Buildings
