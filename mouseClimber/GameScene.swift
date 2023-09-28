@@ -29,6 +29,8 @@ class GameScene: SKScene, ARSessionDelegate {
     
     var audioPlayer: AVAudioPlayer?
     var audioGameOver: AVAudioPlayer?
+    var audioJump1: AVAudioPlayer?
+    var audioJump2: AVAudioPlayer?
     
     private var isJumping = false
     
@@ -73,6 +75,15 @@ class GameScene: SKScene, ARSessionDelegate {
                 audioGameOver = try? AVAudioPlayer(contentsOf: soundURL2)
             } catch {
                 print("Erro ao carregar soundURL2")
+            }
+        }
+        
+        if let soundURL3 = Bundle.main.url(forResource: "jump", withExtension: "wav") {
+            do {
+                audioJump1 = try? AVAudioPlayer(contentsOf: soundURL3)
+                audioJump2 = try? AVAudioPlayer(contentsOf: soundURL3)
+            } catch {
+                print("Erro ao carregar soundURL3")
             }
         }
     }
@@ -143,11 +154,13 @@ class GameScene: SKScene, ARSessionDelegate {
                 if mouthLeft > 0.5 && self.currentSide == .right {
                     self.currentSide = .left
                     mouse.run(.move(to: CGPoint(x: buildings[0].children[0].frame.width, y: mouse.position.y + 100), duration: 0.1))
+                    audioJump1?.play()
                 }
             } else {
                 if mouthRight > 0.5 && self.currentSide == .left {
                     self.currentSide = .right
                     mouse.run(.move(to: CGPoint(x: view.frame.width - buildings[0].children[0].frame.width - mouse.frame.width, y: mouse.position.y + 100), duration: 0.1))
+                    audioJump2?.play()
                 }
             }
         }

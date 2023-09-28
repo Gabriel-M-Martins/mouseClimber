@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		68A9BD502AC4AB1600834141 /* SKButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */; };
 		731003DF2AC4F98B00F304A1 /* backgroundMusic.wav in Resources */ = {isa = PBXBuildFile; fileRef = 731003DE2AC4F98B00F304A1 /* backgroundMusic.wav */; };
+		73AE06C32AC521A500734A3A /* jump.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73AE06C22AC521A500734A3A /* jump.wav */; };
 		73D743092AC4F76B0054DBB8 /* gameOver.wav in Resources */ = {isa = PBXBuildFile; fileRef = 73D743082AC4F76B0054DBB8 /* gameOver.wav */; };
 		A73C1BBE2AC4A9A90015E21A /* Sprites.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73C1BBD2AC4A9A90015E21A /* Sprites.swift */; };
 		A79AB2DD2AC207770008243F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79AB2DC2AC207770008243F /* AppDelegate.swift */; };
@@ -24,6 +25,7 @@
 /* Begin PBXFileReference section */
 		68A9BD4F2AC4AB1600834141 /* SKButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKButtonNode.swift; sourceTree = "<group>"; };
 		731003DE2AC4F98B00F304A1 /* backgroundMusic.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = backgroundMusic.wav; sourceTree = "<group>"; };
+		73AE06C22AC521A500734A3A /* jump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = jump.wav; sourceTree = "<group>"; };
 		73D743082AC4F76B0054DBB8 /* gameOver.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gameOver.wav; sourceTree = "<group>"; };
 		A73C1BBD2AC4A9A90015E21A /* Sprites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sprites.swift; sourceTree = "<group>"; };
 		A79AB2D92AC207770008243F /* mouseClimber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mouseClimber.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,6 +55,7 @@
 			children = (
 				73D743082AC4F76B0054DBB8 /* gameOver.wav */,
 				731003DE2AC4F98B00F304A1 /* backgroundMusic.wav */,
+				73AE06C22AC521A500734A3A /* jump.wav */,
 			);
 			path = Sounds;
 			sourceTree = "<group>";
@@ -156,6 +159,7 @@
 				73D743092AC4F76B0054DBB8 /* gameOver.wav in Resources */,
 				A79AB2E12AC207770008243F /* Actions.sks in Resources */,
 				731003DF2AC4F98B00F304A1 /* backgroundMusic.wav in Resources */,
+				73AE06C32AC521A500734A3A /* jump.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
