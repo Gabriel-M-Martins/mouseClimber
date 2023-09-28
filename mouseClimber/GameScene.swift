@@ -31,6 +31,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     var audioGameOver: AVAudioPlayer?
     var audioJump1: AVAudioPlayer?
     var audioJump2: AVAudioPlayer?
+    var audioEatCheese: AVAudioPlayer?
     
     private var isJumping = false
     
@@ -75,7 +76,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         
         mouse.run(.repeatForever(.move(by: CGVector(dx: 0, dy: (rollingSpeed * -1)/2 ), duration: rollingDuration)))
         
-        getSounds()
+        setSounds()
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -83,6 +84,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         lastUpdateTime = currentTime
         
         updateBuildingsBuffer(delta)
+        removeFallingObjectNodes()
 //        updateFallingObjects()
         
         if !isGameOver {
@@ -91,30 +93,41 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         }
     }
     
-    private func getSounds() {
+    // MARK: - Sounds
+    private func setSounds() {
         if let soundURL = Bundle.main.url(forResource: "backgroundMusic", withExtension: "wav") {
             if let audio = try? AVAudioPlayer(contentsOf: soundURL) {
                 audioPlayer = audio
+                audioPlayer?.volume = 0.1
             }
         }
         
         if let soundURL2 = Bundle.main.url(forResource: "gameOver", withExtension: "wav") {
             if let audio = try? AVAudioPlayer(contentsOf: soundURL2) {
                 audioGameOver = audio
+                audioGameOver?.volume = 0.1
             }
         }
         
         if let soundURL3 = Bundle.main.url(forResource: "jump", withExtension: "wav") {
             if let audio = try? AVAudioPlayer(contentsOf: soundURL3) {
                 audioJump1 = audio
+                
             }
             
             if let audio = try? AVAudioPlayer(contentsOf: soundURL3) {
                 audioJump2 = audio
             }
         }
+        
+        if let soundURL4 = Bundle.main.url(forResource: "eatCheese", withExtension: "wav") {
+            if let audio = try? AVAudioPlayer(contentsOf: soundURL4) {
+                audioEatCheese = audio
+            }
+        }
     }
     
+    // MARK: - Game Over
     private func checkGameOver(_ sprite: SKSpriteNode) {
         if mouse.position.y < 0 - mouse.size.height {
             performGameOver()
@@ -136,14 +149,17 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         let gameOverLabel = SKLabelNode(text: "Game Over")
         gameOverLabel.position = CGPoint(x: view.frame.midX, y: view.frame.midY)
                 addChild(gameOverLabel)
+        gameOverLabel.zPosition = 2
                 
         let restartButton = SKLabelNode(text: "Restart")
         restartButton.position = CGPoint(x: view.frame.midX, y: gameOverLabel.frame.minY - 50)
+        restartButton.zPosition = 2
         restartButton.name = "restartButton"
         addChild(restartButton)
         
         let pontuationLabel = SKLabelNode(text: "Cheeses eaten: \(cheeseCounter)")
         pontuationLabel.position = CGPoint(x: view.frame.midX, y: restartButton.frame.minY - 50)
+        pontuationLabel.zPosition = 2
         addChild(pontuationLabel)
         
     }
@@ -190,6 +206,17 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     }
     
     // MARK: - Falling Objects
+    private func removeFallingObjectNodes() {
+        guard let view = self.view else { return }
+        
+        if fallingObjects.count > 0 {
+            if fallingObjects[0].node.frame.minY <= view.frame.minY {
+                fallingObjects[0].node.removeFromParent()
+                fallingObjects.remove(at: 0)
+            }
+        }
+    }
+    
     private func setupFallingObjects() {
         self.run(.repeatForever(.sequence([
             .run { [weak self] in
@@ -251,7 +278,24 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         
         // Cheese contact
         if (bodyA.categoryBitMask == 1 && bodyB.categoryBitMask == 2) || (bodyA.categoryBitMask == 2 && bodyB.categoryBitMask == 1) {
+            var body = SKPhysicsBody()
+            
+            if bodyA.categoryBitMask == 2 {
+                body = bodyA
+            } else {
+                body = bodyB
+            }
+            
+            body.node?.removeFromParent()
+            
+            if let index = fallingObjects.firstIndex(where: { $0.node == body.node }) {
+                fallingObjects.remove(at: index)
+            }
+            
             self.cheeseCounter += 1
+            if !isGameOver {
+                audioEatCheese?.play()
+            }
         }
     }
     
