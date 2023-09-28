@@ -100,7 +100,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     
     // MARK: - Mouse Physics Body Config
     private func getWalkingMouseBody(size: CGSize) {
-        mouseBody = SKPhysicsBody(rectangleOf: CGSize(width: size.width * 0.8, height: size.height), center: CGPoint(x: 0, y: size.height / 2))
+        mouseBody = SKPhysicsBody(rectangleOf: CGSize(width: size.width * 0.6, height: size.height), center: CGPoint(x: 0, y: size.height / 2))
         mouseBody.categoryBitMask = 1
         mouseBody.contactTestBitMask = 2
         mouseBody.collisionBitMask = 16
