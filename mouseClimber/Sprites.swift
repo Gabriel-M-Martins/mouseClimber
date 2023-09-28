@@ -40,6 +40,15 @@ enum FallingObjects: String, CaseIterable, Storable {
             return true
         }
     }
+    
+    var proportion: CGFloat {
+        switch self {
+            case .Cheese:
+                return 2
+            case .Obstacle:
+                return 3
+        }
+    }
 }
 
 // MARK: - Storable
