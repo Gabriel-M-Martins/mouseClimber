@@ -198,7 +198,7 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="building0" translatesAutoresizingMaskIntoConstraints="NO" id="cTT-1x-jA3">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cheese" translatesAutoresizingMaskIntoConstraints="NO" id="cTT-1x-jA3">
                                         <rect key="frame" x="26.666666666666686" y="0.0" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="UYh-SQ-DY6"/>
@@ -250,6 +250,7 @@
     </scenes>
     <resources>
         <image name="building0" width="225" height="225"/>
+        <image name="cheese" width="2049" height="2049"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

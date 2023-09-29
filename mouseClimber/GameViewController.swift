@@ -40,6 +40,7 @@ class GameViewController: UIViewController, GameDelegate {
     }
     
     @IBAction func backToMainMenu(_ sender: Any) {
+        self.navigationController?.navigationBar.isHidden = false
         self.navigationController?.popViewController(animated: true)
     }
     
