@@ -27,7 +27,8 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     private var rollingSpeed: CGFloat = 3
     private var rollingDuration: Double = 0.01
     
-    private var obstacleFrequency: Int = 10
+    private var obstacleFrequency: Int = 1
+    private var maxObstacleFrequency: Int = 30
     
     var audioPlayer: AVAudioPlayer?
     var audioGameOver: AVAudioPlayer?
@@ -335,6 +336,15 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
             },
             .wait(forDuration: .random(in: 1...(1 + 10/Double(obstacleFrequency))))
         ])))
+        
+        self.run(.repeatForever(.sequence([
+            .run { [weak self] in
+                guard let s = self, s.obstacleFrequency < s.maxObstacleFrequency else { return }
+                s.obstacleFrequency += 1
+                print(s.obstacleFrequency)
+            },
+            .wait(forDuration: .random(in: 1...10))
+        ])))
     }
     
     private func spawnFallingObject(yPosition: CGFloat) {
@@ -475,33 +485,36 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
         building1.anchorPoint = CGPoint(x: 0, y: 0)
         building2.anchorPoint = CGPoint(x: 1, y: 0)
         
-        building1.position = CGPoint(x: 0, y: 0)
+        building1.position = .zero
         building2.position = CGPoint(x: view.frame.maxX, y: 0)
           
         building1.zPosition = -10
         building2.zPosition = -10
-        
-        var obstaclesCreated: Int = 0
         
         // TODO: otimizar isso, aparentemente dá pra renderizar tudo numa só chamada quando a sprite usa a mesma SKTexture (https://developer.apple.com/documentation/spritekit/nodes_for_scene_building/maximizing_node_drawing_performance)
         for i in 0..<Int(buildingHeight/buildingWidth) {
             let rndTileSprite1: SKTexture
             let rndTileSprite2: SKTexture
             
-            if obstaclesCreated < obstacleFrequency && Bool.random() {
+            var overlay1: OrderedOverlayedImageConfigurations?
+            var overlay2: OrderedOverlayedImageConfigurations?
+            
+            var tileCase1 = BuildingTiles.Building1
+            var tileCase2 = BuildingTiles.Building1
+            
+            if Float.random(in: 0...1) > 1 - Float(obstacleFrequency)/Float(maxObstacleFrequency) {
                 if Bool.random() {
-                    rndTileSprite1 = ObstacleTiles.allCases.randomElement()!.texture(ofSize: tileSize)
-                    rndTileSprite2 = BuildingTiles.allCases.randomElement()!.texture(ofSize: tileSize)
+                    tileCase1 = .Building2
                 } else {
-                    rndTileSprite1 = BuildingTiles.allCases.randomElement()!.texture(ofSize: tileSize)
-                    rndTileSprite2 = ObstacleTiles.allCases.randomElement()!.texture(ofSize: tileSize)
+                    tileCase2 = .Building2
                 }
-                
-                obstaclesCreated += 1
-            } else {
-                rndTileSprite1 = BuildingTiles.allCases.randomElement()!.texture(ofSize: tileSize)
-                rndTileSprite2 = BuildingTiles.allCases.randomElement()!.texture(ofSize: tileSize)
             }
+            
+            overlay1 = tileCase1.overlayedImages
+            overlay2 = tileCase2.overlayedImages
+            
+            rndTileSprite1 = tileCase1.texture(ofSize: tileSize)
+            rndTileSprite2 = tileCase2.texture(ofSize: tileSize)
             
             let tile1 = SKSpriteNode(texture: rndTileSprite1)
             let tile2 = SKSpriteNode(texture: rndTileSprite2)
@@ -511,6 +524,147 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
             
             tile1.position = CGPoint(x: 0, y: CGFloat(i) * tile1.frame.height)
             tile2.position = CGPoint(x: 0, y: CGFloat(i) * tile2.frame.height)
+            
+            // ------
+            // 1. calcular aspect ratio
+            // 2. pegar a desired width (que é o tamanho do tile normal)
+            // 3. calcular a nova altura
+            
+            let desiredWidth = buildingWidth * 1.2
+            let desiredHeight = buildingWidth
+            
+            if let configurations = overlay1?.configurations {
+                var lastY: CGFloat?
+                
+                for configuration in configurations {
+                    var aspectRatio: CGFloat
+                    var newSize: CGSize
+                    
+                    if configuration.scalesUsingWidth {
+                        aspectRatio = configuration.imageSize.width/configuration.imageSize.height
+                        newSize = CGSize(width: desiredWidth, height: desiredWidth/aspectRatio)
+                    } else {
+                        aspectRatio = configuration.imageSize.height/configuration.imageSize.width
+                        newSize = CGSize(width: (desiredHeight - (lastY ?? 0))/aspectRatio, height: desiredHeight - (lastY ?? 0))
+                    }
+                    
+                    let textures = configuration.images.map { img in
+                        return SKTexture(image: img)
+                    }
+                    
+                    guard !textures.isEmpty else { continue }
+                    
+                    var anchor: CGPoint
+                    var position: CGPoint
+                    var mirrored: Bool = false
+                    
+                    switch configuration.preferredAnchor {
+                    case .Middle:
+                        anchor = .init(x: 0, y: 0)
+                        position = CGPoint(x: desiredWidth, y: lastY ?? 0)
+                        mirrored = true
+                        
+                    case .Extremities:
+                        anchor = .zero
+                        position = CGPoint(x: 0, y: lastY ?? 0)
+                    }
+                    
+                    let nd = SKSpriteNode(texture: textures[0], size: newSize)
+                    if mirrored { nd.xScale = -1 }
+                    nd.anchorPoint = anchor
+                    nd.position = position
+                    nd.zPosition = 1
+                    lastY = nd.position.y + nd.frame.maxY
+                    
+                    if configuration.hittable {
+                        let physicsBody = SKPhysicsBody(rectangleOf: nd.size, center: CGPoint(x: 0 - nd.frame.width/2, y: nd.frame.height/2))
+                        physicsBody.affectedByGravity = false
+                        physicsBody.allowsRotation = false
+                        physicsBody.categoryBitMask = 4
+                        physicsBody.contactTestBitMask = 1
+                        physicsBody.collisionBitMask = 8
+                        
+                        nd.physicsBody = physicsBody
+                    }
+                    
+                    if configuration.isAnimatable {
+                        nd.run(.repeatForever(
+                            .customAction(withDuration: .infinity, actionBlock: { [weak self] node, _ in
+                                if let s = self?.currentSide, s == .right {
+                                    node.run(.repeatForever(.animate(with: textures, timePerFrame: .random(in: 0.05...0.15))))
+                                }
+                            })
+                        ))
+                    }
+                    
+                    tile1.addChild(nd)
+                }
+            }
+            
+            if let configurations = overlay2?.configurations {
+                var lastY: CGFloat?
+                
+                for configuration in configurations {
+                    var aspectRatio: CGFloat
+                    var newSize: CGSize
+                    
+                    if configuration.scalesUsingWidth {
+                        aspectRatio = configuration.imageSize.width/configuration.imageSize.height
+                        newSize = CGSize(width: desiredWidth, height: desiredWidth/aspectRatio)
+                    } else {
+                        aspectRatio = configuration.imageSize.height/configuration.imageSize.width
+                        newSize = CGSize(width: (desiredHeight - (lastY ?? 0))/aspectRatio, height: desiredHeight - (lastY ?? 0))
+                    }
+                    
+                    let textures = configuration.images.map { img in
+                        return SKTexture(image: img)
+                    }
+                    
+                    guard !textures.isEmpty else { continue }
+                    
+                    var anchor: CGPoint
+                    var position: CGPoint
+                    
+                    switch configuration.preferredAnchor {
+                    case .Middle:
+                        anchor = .init(x: 0, y: 0)
+                        position = CGPoint(x: 0 - desiredWidth, y: lastY ?? 0)
+                        
+                    case .Extremities:
+                        anchor = .init(x: 1, y: 0)
+                        position = CGPoint(x: 0, y: lastY ?? 0)
+                    }
+                    
+                    let nd = SKSpriteNode(texture: textures[0], size: newSize)
+                    nd.anchorPoint = anchor
+                    nd.position = position
+                    nd.zPosition = 1
+                    lastY = nd.position.y + nd.frame.maxY
+                    
+                    if configuration.hittable {
+                        let physicsBody = SKPhysicsBody(rectangleOf: nd.size, center: CGPoint(x: (nd.frame.width/2), y: nd.frame.height/2))
+                        physicsBody.affectedByGravity = false
+                        physicsBody.allowsRotation = false
+                        physicsBody.categoryBitMask = 4
+                        physicsBody.contactTestBitMask = 1
+                        physicsBody.collisionBitMask = 8
+                        
+                        nd.physicsBody = physicsBody
+                    }
+                    
+                    if configuration.isAnimatable {
+                        nd.run(.repeatForever(
+                            .customAction(withDuration: .infinity, actionBlock: { [weak self] node, _ in
+                                if let s = self?.currentSide, s == .left {
+                                    node.run(.repeatForever(.animate(with: textures, timePerFrame: .random(in: 0.05...0.15))))
+                                }
+                            })
+                        ))
+                    }
+                    
+                    tile2.addChild(nd)
+                }
+            }
             
             building1.addChild(tile1)
             building2.addChild(tile2)
