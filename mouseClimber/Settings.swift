@@ -15,6 +15,6 @@ struct Settings {
     static var validatedGameCenter: Bool = false
     
     init(view: UIView) {
-        Self.buildingTileSize = view.frame.width / 3
+        Self.buildingTileSize = view.frame.width / 5
     }
 }

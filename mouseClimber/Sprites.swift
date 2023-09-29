@@ -45,9 +45,9 @@ enum FallingObjects: String, CaseIterable, Storable {
     var proportion: CGFloat {
         switch self {
             case .Cheese:
-                return 2
+                return 5
             case .Obstacle:
-                return 3
+                return 6
         }
     }
 }

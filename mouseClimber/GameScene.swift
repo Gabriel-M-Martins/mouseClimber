@@ -464,7 +464,7 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
     }
     
     private func spawnBuildings(_ view: SKView, parent: SKNode) {
-        let buildingWidth: CGFloat = view.frame.width / 3
+        let buildingWidth: CGFloat = Settings.buildingTileSize
         let buildingHeight: CGFloat = ((view.frame.maxY / buildingWidth).rounded()) * buildingWidth * 2
         
         let tileSize = CGSize(width: buildingWidth, height: buildingWidth)
