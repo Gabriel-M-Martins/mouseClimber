@@ -250,7 +250,7 @@
     </scenes>
     <resources>
         <image name="building0" width="225" height="225"/>
-        <image name="cheese" width="2049" height="2049"/>
+        <image name="cheese" width="30" height="24"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
