@@ -60,8 +60,8 @@ enum BuildingTiles: String, CaseIterable, Storable {
             return nil
         case .Building2:
             return .init(configurations: [
-                .init(images: [.beirada], layoutOrder: 0),
-                .init(images: [.gato0, .gato1], layoutOrder: 1, hittable: true, scalesUsingWidth: false, preferredAnchor: .Middle)
+                .init(images: [UIImage(imageLiteralResourceName: "beirada")], layoutOrder: 0),
+                .init(images: [UIImage(imageLiteralResourceName: "gato0"), UIImage(imageLiteralResourceName: "gato1")], layoutOrder: 1, hittable: true, scalesUsingWidth: false, preferredAnchor: .Middle)
             ])
         }
     }
