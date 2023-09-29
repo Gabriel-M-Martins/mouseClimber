@@ -11,6 +11,40 @@ import SpriteKit
 
 // TODO: storedSprites guardar uma lista de UIImage inves de só uma p poder criar animação e tal.
 //typealias StorableTexture = RawRepresentable & CaseIterable & Storable
+//
+
+struct OrderedOverlayedImageConfigurations {
+    let configurations: [OverlayedImagesConfiguration]
+    
+    init(configurations: [OverlayedImagesConfiguration]) {
+        self.configurations = configurations.sorted(by: { $0.layoutOrder < $1.layoutOrder })
+    }
+}
+
+struct OverlayedImagesConfiguration {
+    let images: [UIImage]
+    let hittable: Bool
+    let isAnimatable: Bool
+    let layoutOrder: Int
+    let scalesUsingWidth: Bool
+    let preferredAnchor: Anchor
+    let imageSize: CGSize
+    
+    enum Anchor {
+        case Middle
+        case Extremities
+    }
+    
+    init(images: [UIImage], layoutOrder: Int, hittable: Bool = false, scalesUsingWidth: Bool = true, preferredAnchor: Anchor = .Extremities) {
+        self.images = images
+        self.isAnimatable = self.images.count > 1
+        self.layoutOrder = layoutOrder
+        self.hittable = hittable
+        self.scalesUsingWidth = scalesUsingWidth
+        self.preferredAnchor = preferredAnchor
+        self.imageSize = self.images[0].size
+    }
+}
 
 // MARK: - Sprites
 enum BuildingTiles: String, CaseIterable, Storable {
@@ -18,13 +52,25 @@ enum BuildingTiles: String, CaseIterable, Storable {
     case Building2 = "building1"
     
     internal static var store: [BuildingTiles : SKTexture] = [:]
+    
+    // fazer retornar uma "configuração" de como cada imagem tem que aparecer
+    var overlayedImages: OrderedOverlayedImageConfigurations? {
+        switch self {
+        case .Building1:
+            return nil
+        case .Building2:
+            return .init(configurations: [
+                .init(images: [.beirada], layoutOrder: 0),
+                .init(images: [.gato0, .gato1], layoutOrder: 1, hittable: true, scalesUsingWidth: false, preferredAnchor: .Middle)
+            ])
+        }
+    }
 }
 
 enum ObstacleTiles: String, CaseIterable, Storable {
     case Cat = "cat"
     
     internal static var store: [Self : SKTexture] = [:]
-    
 }
 
 enum FallingObjects: String, CaseIterable, Storable {
@@ -44,10 +90,10 @@ enum FallingObjects: String, CaseIterable, Storable {
     
     var proportion: CGFloat {
         switch self {
-            case .Cheese:
-                return 5
-            case .Obstacle:
-                return 6
+        case .Cheese:
+            return 5
+        case .Obstacle:
+            return 6
         }
     }
 }
@@ -89,12 +135,12 @@ extension UIImage {
             width: size.width * scaleFactor,
             height: size.height * scaleFactor
         )
-
+        
         // Draw and return the resized UIImage
         let renderer = UIGraphicsImageRenderer(
             size: scaledImageSize
         )
-
+        
         let scaledImage = renderer.image { _ in
             self.draw(in: CGRect(
                 origin: .zero,
@@ -104,4 +150,29 @@ extension UIImage {
         
         return scaledImage
     }
+}
+
+/**
+ Composite two or more image on top of one another to create a single image.
+ This function assumes all images are same size.
+
+ - Parameters:
+ - images: An array of UIImages
+
+ - returns: A compsite image composed of the array of images passed in
+ */
+func compositeImages(images: [UIImage]) -> UIImage {
+    var compositeImage: UIImage!
+    if images.count > 0 {
+        // Get the size of the first image.  This function assume all images are same size
+        let size: CGSize = CGSize(width: images[0].size.width, height: images[0].size.height)
+        UIGraphicsBeginImageContext(size)
+        for image in images {
+            let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+            image.draw(in: rect)
+        }
+        compositeImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+    }
+    return compositeImage
 }
