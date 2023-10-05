@@ -341,7 +341,6 @@ class GameScene: SKScene, ARSessionDelegate, SKPhysicsContactDelegate {
             .run { [weak self] in
                 guard let s = self, s.obstacleFrequency < s.maxObstacleFrequency else { return }
                 s.obstacleFrequency += 1
-                print(s.obstacleFrequency)
             },
             .wait(forDuration: .random(in: 1...10))
         ])))

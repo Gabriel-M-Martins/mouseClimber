@@ -4,5 +4,9 @@
 <dict>
 	<key>GameKit</key>
 	<string>Teste</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>IrishGrover-Regular.ttf</string>
+	</array>
 </dict>
 </plist>

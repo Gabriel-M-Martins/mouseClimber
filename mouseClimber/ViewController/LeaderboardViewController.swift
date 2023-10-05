@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LeaderboardViewController: UIViewController {
+class LeaderboardViewController: BackgroundViewController {
     @IBOutlet weak var table: UITableView!
     
     private var entries: [(position: Int, player: String, score: String, img: UIImage?)] = []
@@ -16,6 +16,8 @@ class LeaderboardViewController: UIViewController {
         super.viewDidLoad()
         
         table.dataSource = self
+        table.delegate = self
+        table.backgroundColor = .clear
         
         DispatchQueue.global().async { [weak self] in
             let dg = DispatchGroup()
@@ -52,18 +54,27 @@ extension LeaderboardViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let entry = entries[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+        let sortedEntries = entries.sorted { $0.position < $1.position }
         
-        cell.imageView?.image = entry.img
-        cell.textLabel?.text = "\(entry.position + 1). \(entry.player)"
-        cell.detailTextLabel?.text = entry.score
+        let entry = sortedEntries[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath) as! LeaderboardCell
         
-        cell.textLabel?.font = .systemFont(ofSize: 20)
-        cell.detailTextLabel?.font = .systemFont(ofSize: 16)
+        cell.playerImage.image = entry.img
+        cell.playerName.text = "\(entry.position + 1). \(entry.player)"
+        cell.playerCheeses.text = entry.score
+        
+        cell.playerName.font = .systemFont(ofSize: 20)
+        cell.playerCheeses.font = .systemFont(ofSize: 16)
+        
+        cell.playerName.textColor = .systemBackground
+        cell.playerCheeses.textColor = .systemBackground
         
         return cell
     }
-    
-    
+}
+
+extension LeaderboardViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.table.deselectRow(at: indexPath, animated: true)
+    }
 }

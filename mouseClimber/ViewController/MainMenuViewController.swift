@@ -7,8 +7,15 @@
 
 import UIKit
 
-class MainMenuViewController: UIViewController {
+class MainMenuViewController: BackgroundViewController {
+    
+    @IBOutlet weak var startButton: UIButton!
+    @IBOutlet weak var leaderboardButton: UIButton!
+    @IBOutlet var creditsButton: UIButton!
+    
     static let startGameSegue: String = "startGame"
+    static let openLeaderboardSegue: String = "openLeaderboard"
+    static let showCreditsSegue: String = "showCredits"
     
     private var clickedStart = false
     
@@ -18,8 +25,27 @@ class MainMenuViewController: UIViewController {
         
         validateGameCenter()
         loadTilesAssets()
+        
+        let customFontSize: CGFloat = 20
+        
+        guard let customFont = UIFont(name: "IrishGrover-Regular", size: customFontSize) else {
+            fatalError("Failed to load custom font.")
+        }
+        
+        startButton.titleLabel?.font = customFont
+        startButton.tintColor = .systemBackground
+        
+        leaderboardButton.titleLabel?.font = customFont
+        leaderboardButton.tintColor = .systemBackground
+        
+        creditsButton.titleLabel?.font = customFont
+        creditsButton.tintColor = .systemBackground
     }
-
+    
+    @IBAction func showCredits(_ sender: Any) {
+        performSegue(withIdentifier: Self.showCreditsSegue, sender: nil)
+    }
+    
     @IBAction func startGame(_ sender: Any) {
         if Settings.hasFinishedLoadingTiles {
             enterGame()
@@ -29,7 +55,7 @@ class MainMenuViewController: UIViewController {
     }
     
     @IBAction func openLeaderboard(_ sender: Any) {
-        performSegue(withIdentifier: "leaderboard", sender: nil)
+        performSegue(withIdentifier: Self.openLeaderboardSegue, sender: nil)
     }
     
     private func enterGame() {
