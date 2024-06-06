@@ -16,6 +16,8 @@ class BackgroundViewController: UIViewController {
         backgroundImage.contentMode = .scaleAspectFill
         backgroundImage.frame = self.view.bounds
         
+        overrideUserInterfaceStyle = .light
+        
         self.view.addSubview(backgroundImage)
         self.view.sendSubviewToBack(backgroundImage)
     }

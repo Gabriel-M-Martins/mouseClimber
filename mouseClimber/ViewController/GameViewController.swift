@@ -30,6 +30,7 @@ class GameViewController: UIViewController, GameDelegate {
     override func viewDidLoad() {
         self.navigationController?.navigationBar.isHidden = true
 
+        overrideUserInterfaceStyle = .light
         gameOverView.isHidden = true
         
         super.viewDidLoad()
