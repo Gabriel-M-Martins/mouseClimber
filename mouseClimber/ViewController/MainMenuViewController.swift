@@ -16,6 +16,7 @@ class MainMenuViewController: BackgroundViewController {
     static let startGameSegue: String = "startGame"
     static let openLeaderboardSegue: String = "openLeaderboard"
     static let showCreditsSegue: String = "showCredits"
+    static let goToOnboarding: String = "goToOnboarding"
     
     private var clickedStart = false
     
@@ -40,6 +41,10 @@ class MainMenuViewController: BackgroundViewController {
         
         creditsButton.titleLabel?.font = customFont
         creditsButton.tintColor = .systemBackground
+        
+        if !UserDefaults.hasOnboarded {
+            performSegue(withIdentifier: Self.goToOnboarding, sender: nil)
+        }
     }
     
     @IBAction func showCredits(_ sender: Any) {

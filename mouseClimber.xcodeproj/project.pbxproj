@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		54E6ABCE2AC3E7C600D73667 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */; };
 		54E6ABD02AC3EEC200D73667 /* LeaderboardScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */; };
+		6817A2D62C126D0C0073238F /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6817A2D52C126D0C0073238F /* OnboardingViewController.swift */; };
+		6817A2D82C126E1B0073238F /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6817A2D72C126E1B0073238F /* UserDefaults.swift */; };
+		6817A2DB2C12714E0073238F /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6817A2DA2C12714E0073238F /* OnboardingViewModel.swift */; };
 		68342CA42ACEDC9500CD6353 /* IrishGrover-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68342CA22ACEDC9500CD6353 /* IrishGrover-Regular.ttf */; };
 		68342CA52ACEDC9500CD6353 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 68342CA32ACEDC9500CD6353 /* LICENSE.txt */; };
 		68342CA72ACEE60100CD6353 /* LeaderboardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68342CA62ACEE60100CD6353 /* LeaderboardCell.swift */; };
@@ -35,6 +38,9 @@
 		54E6ABC82AC3721E00D73667 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		54E6ABCD2AC3E7C600D73667 /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
 		54E6ABCF2AC3EEC200D73667 /* LeaderboardScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardScene.swift; sourceTree = "<group>"; };
+		6817A2D52C126D0C0073238F /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		6817A2D72C126E1B0073238F /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		6817A2DA2C12714E0073238F /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		68342CA22ACEDC9500CD6353 /* IrishGrover-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "IrishGrover-Regular.ttf"; sourceTree = "<group>"; };
 		68342CA32ACEDC9500CD6353 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		68342CA62ACEE60100CD6353 /* LeaderboardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardCell.swift; sourceTree = "<group>"; };
@@ -70,9 +76,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6817A2D92C12713F0073238F /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				6817A2DA2C12714E0073238F /* OnboardingViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		68342C9C2ACEDA7000CD6353 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				6817A2D52C126D0C0073238F /* OnboardingViewController.swift */,
 				68342CA82ACEEAD300CD6353 /* BackgroundViewController.swift */,
 				A71C6C7D2AC5E4B100140EA9 /* MainMenuViewController.swift */,
 				A79AB2E42AC207770008243F /* GameViewController.swift */,
@@ -128,6 +143,7 @@
 				A71C6C7B2AC5DF2400140EA9 /* GameKitHelper.swift */,
 				A73C1BBD2AC4A9A90015E21A /* Sprites.swift */,
 				A71C6C7F2AC6002600140EA9 /* Settings.swift */,
+				6817A2D72C126E1B0073238F /* UserDefaults.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -154,6 +170,7 @@
 				73D743072AC4F7620054DBB8 /* Sounds */,
 				54E6ABC82AC3721E00D73667 /* Info.plist */,
 				A71C6C7A2AC5DF2400140EA9 /* Helper */,
+				6817A2D92C12713F0073238F /* ViewModel */,
 				68342C9C2ACEDA7000CD6353 /* ViewController */,
 				68342C9D2ACEDABC00CD6353 /* Scene */,
 				68342C9E2ACEDB0000CD6353 /* Storyboard */,
@@ -245,6 +262,7 @@
 				68342CAB2ACEF8A900CD6353 /* CreditsViewController.swift in Sources */,
 				68342CA92ACEEAD300CD6353 /* BackgroundViewController.swift in Sources */,
 				A79AB2E32AC207770008243F /* GameScene.swift in Sources */,
+				6817A2DB2C12714E0073238F /* OnboardingViewModel.swift in Sources */,
 				A71C6C802AC6002600140EA9 /* Settings.swift in Sources */,
 				A79AB2E52AC207770008243F /* GameViewController.swift in Sources */,
 				68342CA72ACEE60100CD6353 /* LeaderboardCell.swift in Sources */,
@@ -253,6 +271,8 @@
 				A71C6C7E2AC5E4B100140EA9 /* MainMenuViewController.swift in Sources */,
 				A71C6C7C2AC5DF2400140EA9 /* GameKitHelper.swift in Sources */,
 				A79AB2DD2AC207770008243F /* AppDelegate.swift in Sources */,
+				6817A2D62C126D0C0073238F /* OnboardingViewController.swift in Sources */,
+				6817A2D82C126E1B0073238F /* UserDefaults.swift in Sources */,
 				54E6ABD02AC3EEC200D73667 /* LeaderboardScene.swift in Sources */,
 				54E6ABCE2AC3E7C600D73667 /* MainMenu.swift in Sources */,
 			);
