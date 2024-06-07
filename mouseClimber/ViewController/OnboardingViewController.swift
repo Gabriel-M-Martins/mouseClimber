@@ -89,6 +89,7 @@ class OnboardingViewController: BackgroundViewController {
     
     @objc private func gotItButtonTapped() {
         UserDefaults.hasOnboarded = true
+        self.viewModel.stopAnimations()
         navigationController?.popViewController(animated: false)
     }
 }
